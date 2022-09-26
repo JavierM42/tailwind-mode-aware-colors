@@ -1,4 +1,44 @@
+![Banner](./image.png)
+
 # tailwind-mode-aware-colors
 
-<!-- TODO readme -->
-<!-- TODO article link -->
+Adds dynamic colors to TailwindCSS with light and dark shades that are shown based on the user's color scheme.
+
+With `tailwind-mode-ware-colors`, `bg-primary` can be used instead of `bg-primary-light dark:bg-primary-dark`.
+
+## Installation & Usage
+
+```
+npm install --save-dev tailwind-mode-aware-colors
+```
+
+### `tailwind.config.js`
+```js
+
+module.exports = require('tailwind-mode-aware-colors')({
+  // your usual config
+  theme: {
+    colors: {
+      primary: {
+        // colors defined with light and dark keys will be dynamic
+        light: '#bbffa3',
+        dark: '#144b00'
+      }
+      ...
+    }
+  }
+  ...
+});
+```
+
+- Works with both `media` and `class` [dark mode strategies](https://tailwindcss.com/docs/dark-mode#toggling-dark-mode-manually).
+
+- In the example above, `primary-light` and `primary-dark` will still be registered as colors, so you can use the static shades as well as the new dynamic one.
+
+- Works with arbitrarily nested colors. For example, if you had `primary-surface-variant-light` and `primary-surface-variant-dark`, the plugin would generate `primary-surface-variant`.
+
+- Of course, you can still use `dark:`, `md:`, `hover:` and any other Tailwind modifiers.
+
+## Why isn't the plugin called in the `plugins` array of `tailwind.config.js`?
+
+`tailwind-mode-aware-colors` modifies your `theme.colors` object to add the new dynamic colors. The Tailwind engine and any other plugins you may be using will then pick those up. Because of that, it needs to wrap your Tailwind configuration and cannot be called in the plugins array.
