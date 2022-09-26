@@ -4,7 +4,7 @@
 
 Adds dynamic colors to TailwindCSS with light and dark shades that are shown based on the user's color scheme.
 
-With `tailwind-mode-ware-colors`, `bg-primary` can be used instead of `bg-primary-light dark:bg-primary-dark`.
+With this plugin, `bg-primary` can be used instead of `bg-primary-light dark:bg-primary-dark`.
 
 ## Installation & Usage
 
