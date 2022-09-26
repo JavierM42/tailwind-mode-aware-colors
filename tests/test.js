@@ -60,54 +60,68 @@ describe("When config is well-formed", () => {
     );
   });
 
-  it("Generates the correct CSS", () => {
-    const config = withModeAwareColors({
-      content: [
-        {
-          raw: "bg-a text-a/50 dark",
-        },
-      ],
-      theme: {
-        colors: {
-          a: {
-            light: "#ffffff",
-            dark: "#000000",
+  describe.each`
+    darkModeConfig                   | expectedSelector
+    ${undefined}                     | ${"@media (prefers-colors-cheme: dark)"}
+    ${"media"}                       | ${"@media (prefers-colors-cheme: dark)"}
+    ${["media", ".something"]}       | ${"@media (prefers-colors-cheme: dark)"}
+    ${"class"}                       | ${".dark"}
+    ${["class"]}                     | ${".dark"}
+    ${["class", ".custom-selector"]} | ${".custom-selector"}
+  `(
+    "When darkMode config is $darkModeConfig",
+    ({ darkModeConfig, expectedSelector }) => {
+      it("Generates the correct CSS", () => {
+        const config = withModeAwareColors({
+          darkMode: darkModeConfig,
+          content: [
+            {
+              raw: "bg-a text-a/50 dark something custom-selector",
+            },
+          ],
+          theme: {
+            colors: {
+              a: {
+                light: "#ffffff",
+                dark: "#000000",
+              },
+            },
           },
-        },
-      },
-    });
+        });
 
-    let utilitiesCSS = postcss([require("tailwindcss")(config)]).process(
-      "@tailwind utilities"
-    ).css;
+        let utilitiesCSS = postcss([require("tailwindcss")(config)]).process(
+          "@tailwind utilities"
+        ).css;
 
-    expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
-      `
-    .bg-a {
-      --tw-bg-opacity: 1;
-      background-color: rgb(var(--color-a) / var(--tw-bg-opacity))
+        expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
+          `
+      .bg-a {
+        --tw-bg-opacity: 1;
+        background-color: rgb(var(--color-a) / var(--tw-bg-opacity))
+      }
+        .text-a\\/50 {
+        color: rgb(var(--color-a) / 0.5)
+      }
+      `.replace(/\n|\s|\t/g, "")
+        );
+
+        let baseCSS = postcss([require("tailwindcss")(config)]).process(
+          "@tailwind base"
+        ).css;
+
+        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+          `html {
+          --color-a: 255 255 255;
+        }`.replace(/\n|\s|\t/g, "")
+        );
+        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+          `${expectedSelector} {
+          --color-a: 0 0 0;
+        }`.replace(/\n|\s|\t/g, "")
+        );
+      });
     }
-      .text-a\\/50 {
-      color: rgb(var(--color-a) / 0.5)
-    }
-    `.replace(/\n|\s|\t/g, "")
-    );
-
-    let baseCSS = postcss([require("tailwindcss")(config)]).process(
-      "@tailwind base"
-    ).css;
-
-    expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
-      `html {
-        --color-a: 255 255 255;
-      }`.replace(/\n|\s|\t/g, "")
-    );
-    expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
-      `.dark {
-        --color-a: 0 0 0;
-      }`.replace(/\n|\s|\t/g, "")
-    );
-  });
+  );
 });
 
 describe("When config is not well-formed", () => {

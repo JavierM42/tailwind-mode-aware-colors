@@ -4,7 +4,15 @@ const chroma = require("chroma-js");
 module.exports = (config) => {
   const colors = config.theme.colors || {};
 
-  const stylesToAdd = { html: {}, ".dark": {} };
+  const DARK_SELECTOR = Array.isArray(config.darkMode)
+    ? config.darkMode[0] === "class"
+      ? config.darkMode[1] || ".dark"
+      : "@media (prefers-colors-cheme: dark)"
+    : config.darkMode === "class"
+    ? ".dark"
+    : "@media (prefers-colors-cheme: dark)";
+
+  const stylesToAdd = { html: {}, [DARK_SELECTOR]: {} };
 
   const traverseColorsMap = (path, colorsMap) => {
     if (colorsMap.light && colorsMap.dark) {
@@ -20,7 +28,7 @@ module.exports = (config) => {
           stylesToAdd["html"][varName] = chroma(colorsMap.light)
             .rgb()
             .join(" ");
-          stylesToAdd[".dark"][varName] = chroma(colorsMap.dark)
+          stylesToAdd[DARK_SELECTOR][varName] = chroma(colorsMap.dark)
             .rgb()
             .join(" ");
         } else {
