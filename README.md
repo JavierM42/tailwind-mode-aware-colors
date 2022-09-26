@@ -1,4 +1,4 @@
-![Banner](./image.png)
+![Banner](https://raw.githubusercontent.com/JavierM42/tailwind-mode-aware-colors/main/image.png)
 
 # tailwind-mode-aware-colors
 
