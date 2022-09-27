@@ -31,11 +31,13 @@ module.exports = require('tailwind-mode-aware-colors')({
 });
 ```
 
+Any pair of colors `X-light` and `X-dark` will yield a new color `X` that automatically adapts to the color scheme.
+
 - Works with both `media` and `class` [dark mode strategies](https://tailwindcss.com/docs/dark-mode#toggling-dark-mode-manually).
 
-- In the example above, `primary-light` and `primary-dark` will still be registered as colors, so you can use the static shades as well as the new dynamic one.
+- The original colors will still exist, so you can use the static shades as well as the new dynamic one.
 
-- Works with arbitrarily nested colors. For example, if you had `primary-surface-variant-light` and `primary-surface-variant-dark`, the plugin would generate `primary-surface-variant`.
+- Works with arbitrarily nested structures. For example, if you had `primary-surface-variant-light` and `primary-surface-variant-dark`, the plugin would generate `primary-surface-variant`.
 
 - Of course, you can still use `dark:`, `md:`, `hover:` and any other Tailwind modifiers.
 

@@ -1,9 +1,23 @@
 const plugin = require("tailwindcss/plugin");
 const chroma = require("chroma-js");
 
-module.exports = (config) => {
-  const colors = config.theme.colors || {};
+// from tailwindcss src/util/flattenColorPalette
+const flattenColorPalette = (colors) =>
+  Object.assign(
+    {},
+    ...Object.entries(colors ?? {}).flatMap(([color, values]) =>
+      typeof values == "object"
+        ? Object.entries(flattenColorPalette(values)).map(([number, hex]) => ({
+            [color + (number === "DEFAULT" ? "" : `-${number}`)]: hex,
+          }))
+        : [{ [`${color}`]: values }]
+    )
+  );
 
+module.exports = (config) => {
+  const colors = flattenColorPalette(config.theme.colors || {});
+
+  const LIGHT_SELECTOR = "html";
   const DARK_SELECTOR = Array.isArray(config.darkMode)
     ? config.darkMode[0] === "class"
       ? config.darkMode[1] || ".dark"
@@ -14,45 +28,32 @@ module.exports = (config) => {
 
   const stylesToAdd = { html: {}, [DARK_SELECTOR]: {} };
 
-  const traverseColorsMap = (path, colorsMap) => {
-    if (colorsMap.light && colorsMap.dark) {
-      if (
-        typeof colorsMap.light === "string" &&
-        typeof colorsMap.dark === "string"
-      ) {
-        const varName = `--color-${path.join("-")}`;
+  Object.keys(colors).map((colorName) => {
+    const match = colorName.match(new RegExp(/(.+)-light/));
 
-        if (colorsMap["DEFAULT"] === undefined) {
-          colorsMap["DEFAULT"] = `rgb(var(${varName}) / <alpha-value>)`;
+    if (match) {
+      const modeAwareColorName = match[1];
 
-          stylesToAdd["html"][varName] = chroma(colorsMap.light)
-            .rgb()
-            .join(" ");
-          stylesToAdd[DARK_SELECTOR][varName] = chroma(colorsMap.dark)
-            .rgb()
-            .join(" ");
+      const lightColor = colors[colorName];
+      const darkColor = colors[`${modeAwareColorName}-dark`];
+
+      if (lightColor && darkColor) {
+        if (colors[modeAwareColorName]) {
+          throw `withModeAwareColors plugin error: adding the '${modeAwareColorName}' mode-aware color would overwrite an existing color.`;
         } else {
-          throw "withModeAwareColors plugin error: adding a mode-aware color would overwrite a DEFAULT color. If 'light' and 'dark' values are specified for a color, DEFAULT must not be included.";
+          const varName = `--color-${modeAwareColorName}`;
+          colors[modeAwareColorName] = `rgb(var(${varName}) / <alpha-value>)`;
+
+          stylesToAdd[LIGHT_SELECTOR][varName] = chroma(lightColor)
+            .rgb()
+            .join(" ");
+          stylesToAdd[DARK_SELECTOR][varName] = chroma(darkColor)
+            .rgb()
+            .join(" ");
         }
-      } else {
-        throw "withModeAwareColors plugin error: 'light' and 'dark' color keys must have string values.";
       }
     }
-
-    // recursively traverse the rest of the keys in search of 'light' and 'dark' keys
-    Object.keys(colorsMap).forEach((key) => {
-      if (
-        !["DEFAULT", "light", "dark"].includes(key) &&
-        colorsMap[key] &&
-        typeof colorsMap[key] === "object" &&
-        !Array.isArray(colorsMap[key])
-      ) {
-        traverseColorsMap([...path, key], colorsMap[key]);
-      }
-    });
-  };
-
-  traverseColorsMap([], colors);
+  });
 
   return {
     ...config,
