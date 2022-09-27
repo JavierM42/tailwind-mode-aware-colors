@@ -28,7 +28,7 @@ module.exports = (config) => {
 
   const stylesToAdd = { html: {}, [DARK_SELECTOR]: {} };
 
-  Object.keys(colors).map((colorName) => {
+  Object.keys(colors).forEach((colorName) => {
     const match = colorName.match(new RegExp(/^(?:(.+)-)?light(?:-(.+))?$/));
 
     if (match) {
