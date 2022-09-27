@@ -29,13 +29,16 @@ module.exports = (config) => {
   const stylesToAdd = { html: {}, [DARK_SELECTOR]: {} };
 
   Object.keys(colors).map((colorName) => {
-    const match = colorName.match(new RegExp(/(.+)-light/));
+    const match = colorName.match(new RegExp(/^(?:(.+)-)?light(?:-(.+))?$/));
 
     if (match) {
-      const modeAwareColorName = match[1];
+      const prefix = match[1];
+      const suffix = match[2];
+      const modeAwareColorName = [prefix, suffix].filter((x) => x).join("-");
 
       const lightColor = colors[colorName];
-      const darkColor = colors[`${modeAwareColorName}-dark`];
+      const darkColor =
+        colors[[prefix, "dark", suffix].filter((x) => x).join("-")];
 
       if (lightColor && darkColor) {
         if (colors[modeAwareColorName]) {

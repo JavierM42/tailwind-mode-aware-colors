@@ -2,7 +2,7 @@ const withModeAwareColors = require("../src/index");
 const postcss = require("postcss");
 
 describe("When config is well-formed", () => {
-  it("Flattens color map and adds mode aware color when there are both light and dark keys", () => {
+  it("Flattens color map and adds mode aware color when there are both light and dark segments", () => {
     expect(
       withModeAwareColors({
         theme: {
@@ -27,7 +27,7 @@ describe("When config is well-formed", () => {
     );
   });
 
-  it("Flattens color map and adds mode aware color when there are both light and dark keys, even if nested", () => {
+  it("Flattens color map and adds mode aware color when there are both light and dark segment, even if nested", () => {
     expect(
       withModeAwareColors({
         theme: {
@@ -48,6 +48,64 @@ describe("When config is well-formed", () => {
             "a-b": "rgb(var(--color-a-b) / <alpha-value>)",
             "a-b-light": "#ffffff",
             "a-b-dark": "#000000",
+          },
+        },
+      })
+    );
+  });
+
+  it("Flattens color map and adds mode aware color when there are both light and dark segments, even if they're not at the end", () => {
+    expect(
+      withModeAwareColors({
+        theme: {
+          colors: {
+            a: {
+              b: {
+                light: {
+                  c: "#ffffff",
+                },
+                dark: {
+                  c: "#000000",
+                },
+              },
+            },
+          },
+        },
+      })
+    ).toEqual(
+      expect.objectContaining({
+        theme: {
+          colors: {
+            "a-b-c": "rgb(var(--color-a-b-c) / <alpha-value>)",
+            "a-b-light-c": "#ffffff",
+            "a-b-dark-c": "#000000",
+          },
+        },
+      })
+    );
+  });
+
+  it("Flattens color map and adds mode aware color when there are both light and dark segments, even if they're at the start", () => {
+    expect(
+      withModeAwareColors({
+        theme: {
+          colors: {
+            light: {
+              a: "#ffffff",
+            },
+            dark: {
+              a: "#000000",
+            },
+          },
+        },
+      })
+    ).toEqual(
+      expect.objectContaining({
+        theme: {
+          colors: {
+            a: "rgb(var(--color-a) / <alpha-value>)",
+            "light-a": "#ffffff",
+            "dark-a": "#000000",
           },
         },
       })
