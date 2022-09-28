@@ -15,7 +15,13 @@ const flattenColorPalette = (colors) =>
   );
 
 module.exports = (config) => {
-  const colors = flattenColorPalette(config.theme.colors || {});
+  const extendsDefaultColors = !config.theme.colors;
+
+  const colors = flattenColorPalette(
+    extendsDefaultColors
+      ? config.theme.extend.colors || {}
+      : config.theme.colors
+  );
 
   const LIGHT_SELECTOR = "html";
   const DARK_SELECTOR = Array.isArray(config.darkMode)
@@ -60,7 +66,9 @@ module.exports = (config) => {
 
   return {
     ...config,
-    theme: { ...(config.theme || []), colors },
+    theme: extendsDefaultColors
+      ? { ...config.theme, extend: { ...(config.theme.extend || {}), colors } }
+      : { ...(config.theme || []), colors },
     plugins: [
       ...(config.plugins || []),
       plugin(({ addBase }) => addBase(stylesToAdd)),

@@ -27,6 +27,35 @@ describe("When config is well-formed", () => {
     );
   });
 
+  it("Flattens extend color map and adds mode aware color when there are both light and dark segments", () => {
+    expect(
+      withModeAwareColors({
+        theme: {
+          extend: {
+            colors: {
+              a: {
+                light: "#ffffff",
+                dark: "#000000",
+              },
+            },
+          },
+        },
+      })
+    ).toEqual(
+      expect.objectContaining({
+        theme: {
+          extend: {
+            colors: {
+              a: "rgb(var(--color-a) / <alpha-value>)",
+              "a-light": "#ffffff",
+              "a-dark": "#000000",
+            },
+          },
+        },
+      })
+    );
+  });
+
   it("Flattens color map and adds mode aware color when there are both light and dark segment, even if nested", () => {
     expect(
       withModeAwareColors({
