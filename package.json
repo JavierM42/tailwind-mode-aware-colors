@@ -4,7 +4,7 @@
   "description": "TailwindCSS Plugin to generate dynamic colors that will automatically switch between light and dark mode variants.",
   "main": "src/index.js",
   "license": "MIT",
-  "repository": "https://github.com/",
+  "repository": "https://github.com/JavierM42/tailwind-mode-aware-colors",
   "scripts": {
     "test": "jest"
   },
