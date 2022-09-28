@@ -114,9 +114,9 @@ describe("When config is well-formed", () => {
 
   describe.each`
     darkModeConfig                   | expectedSelector
-    ${undefined}                     | ${"@media (prefers-colors-cheme: dark)"}
-    ${"media"}                       | ${"@media (prefers-colors-cheme: dark)"}
-    ${["media", ".something"]}       | ${"@media (prefers-colors-cheme: dark)"}
+    ${undefined}                     | ${"@media (prefers-color-scheme: dark)"}
+    ${"media"}                       | ${"@media (prefers-color-scheme: dark)"}
+    ${["media", ".something"]}       | ${"@media (prefers-color-scheme: dark)"}
     ${"class"}                       | ${".dark"}
     ${["class"]}                     | ${".dark"}
     ${["class", ".custom-selector"]} | ${".custom-selector"}

@@ -21,10 +21,10 @@ module.exports = (config) => {
   const DARK_SELECTOR = Array.isArray(config.darkMode)
     ? config.darkMode[0] === "class"
       ? config.darkMode[1] || ".dark"
-      : "@media (prefers-colors-cheme: dark)"
+      : "@media (prefers-color-scheme: dark)"
     : config.darkMode === "class"
     ? ".dark"
-    : "@media (prefers-colors-cheme: dark)";
+    : "@media (prefers-color-scheme: dark)";
 
   const stylesToAdd = { html: {}, [DARK_SELECTOR]: {} };
 
