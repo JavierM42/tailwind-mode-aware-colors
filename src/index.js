@@ -1,5 +1,5 @@
 const plugin = require("tailwindcss/plugin");
-const chroma = require("chroma-js");
+const Color = require("color");
 
 // from tailwindcss src/util/flattenColorPalette
 const flattenColorPalette = (colors) =>
@@ -53,11 +53,13 @@ module.exports = (config) => {
           const varName = `--color-${modeAwareColorName}`;
           colors[modeAwareColorName] = `rgb(var(${varName}) / <alpha-value>)`;
 
-          stylesToAdd[LIGHT_SELECTOR][varName] = chroma(lightColor)
+          stylesToAdd[LIGHT_SELECTOR][varName] = Color(lightColor)
             .rgb()
+            .array()
             .join(" ");
-          stylesToAdd[DARK_SELECTOR][varName] = chroma(darkColor)
+          stylesToAdd[DARK_SELECTOR][varName] = Color(darkColor)
             .rgb()
+            .array()
             .join(" ");
         }
       }
