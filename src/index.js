@@ -23,16 +23,19 @@ module.exports = (config) => {
       : config.theme.colors
   );
 
-  const LIGHT_SELECTOR = "html";
-  const DARK_SELECTOR = Array.isArray(config.darkMode)
-    ? config.darkMode[0] === "class"
-      ? config.darkMode[1] || ".dark"
-      : "@media (prefers-color-scheme: dark)"
-    : config.darkMode === "class"
-    ? ".dark"
-    : "@media (prefers-color-scheme: dark)";
+  const usesMediaStrategy = Array.isArray(config.darkMode)
+    ? config.darkMode[0] !== "class"
+    : config.darkMode !== "class";
+  const DARK_SELECTOR =
+    !usesMediaStrategy &&
+    (Array.isArray(config.darkMode) ? config.darkMode[1] || ".dark" : ".dark");
 
-  const stylesToAdd = { html: {}, [DARK_SELECTOR]: {} };
+  const stylesToAdd = {
+    html: {},
+    ...(usesMediaStrategy
+      ? { "@media (prefers-color-scheme: dark)": { html: {} } }
+      : { [DARK_SELECTOR]: {} }),
+  };
 
   Object.keys(colors).forEach((colorName) => {
     const match = colorName.match(new RegExp(/^(?:(.+)-)?light(?:-(.+))?$/));
@@ -53,14 +56,16 @@ module.exports = (config) => {
           const varName = `--color-${modeAwareColorName}`;
           colors[modeAwareColorName] = `rgb(var(${varName}) / <alpha-value>)`;
 
-          stylesToAdd[LIGHT_SELECTOR][varName] = Color(lightColor)
-            .rgb()
-            .array()
-            .join(" ");
-          stylesToAdd[DARK_SELECTOR][varName] = Color(darkColor)
-            .rgb()
-            .array()
-            .join(" ");
+          const lightStyle = Color(lightColor).rgb().array().join(" ");
+          const darkStyle = Color(darkColor).rgb().array().join(" ");
+
+          stylesToAdd.html[varName] = lightStyle;
+          if (usesMediaStrategy) {
+            stylesToAdd["@media (prefers-color-scheme: dark)"].html[varName] =
+              darkStyle;
+          } else {
+            stylesToAdd[DARK_SELECTOR][varName] = darkStyle;
+          }
         }
       }
     }
