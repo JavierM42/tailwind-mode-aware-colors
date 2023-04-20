@@ -14,7 +14,10 @@ const flattenColorPalette = (colors) =>
     )
   );
 
-module.exports = (config) => {
+module.exports = (
+  config,
+  { lightId, darkId } = { lightId: "light", darkId: "dark" }
+) => {
   const extendsDefaultColors = !config.theme.colors;
 
   const colors = flattenColorPalette(
@@ -38,7 +41,9 @@ module.exports = (config) => {
   };
 
   Object.keys(colors).forEach((colorName) => {
-    const match = colorName.match(new RegExp(/^(?:(.+)-)?light(?:-(.+))?$/));
+    const match = colorName.match(
+      new RegExp(`^(?:(.+)-)?${lightId}(?:-(.+))?$`)
+    );
 
     if (match) {
       const prefix = match[1];
@@ -47,7 +52,7 @@ module.exports = (config) => {
 
       const lightColor = colors[colorName];
       const darkColor =
-        colors[[prefix, "dark", suffix].filter((x) => x).join("-")];
+        colors[[prefix, darkId, suffix].filter((x) => x).join("-")];
 
       if (lightColor && darkColor) {
         if (colors[modeAwareColorName]) {

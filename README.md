@@ -13,6 +13,7 @@ npm install --save-dev tailwind-mode-aware-colors
 ```
 
 ### `tailwind.config.js`
+
 ```js
 
 module.exports = require('tailwind-mode-aware-colors')({
@@ -42,6 +43,17 @@ Any pair of colors `X-light` and `X-dark` will yield a new color `X` that automa
 - Works with `theme.extend.colors` too.
 
 - Of course, you can still use `dark:`, `md:`, `hover:` and any other Tailwind modifiers.
+
+## Options
+
+If for some reason `-light` and `-dark` don't work for you, you can pass an options object as a second parameter and customize the suffixes. Just replace `"light"` and `"dark"` with any other string.
+
+```js
+module.exports = require("tailwind-mode-aware-colors")(config, {
+  lightId: "light",
+  darkId: "dark",
+});
+```
 
 ## Why isn't the plugin called in the `plugins` array of `tailwind.config.js`?
 

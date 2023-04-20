@@ -141,6 +141,34 @@ describe("When config is well-formed", () => {
     );
   });
 
+  it("Flattens color map and adds mode aware color when there are both light and dark segments, with custom light and dark ids", () => {
+    expect(
+      withModeAwareColors(
+        {
+          theme: {
+            colors: {
+              a: {
+                claro: "#ffffff",
+                oscuro: "#000000",
+              },
+            },
+          },
+        },
+        { lightId: "claro", darkId: "oscuro" }
+      )
+    ).toEqual(
+      expect.objectContaining({
+        theme: {
+          colors: {
+            a: "rgb(var(--color-a) / <alpha-value>)",
+            "a-claro": "#ffffff",
+            "a-oscuro": "#000000",
+          },
+        },
+      })
+    );
+  });
+
   describe.each`
     darkModeConfig                   | expectedSelector
     ${undefined}                     | ${"@media (prefers-color-scheme: dark) { html"}
