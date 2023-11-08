@@ -14,31 +14,12 @@ const flattenColorPalette = (colors) =>
     )
   );
 
-module.exports = (
-  config,
-  { lightId, darkId } = { lightId: "light", darkId: "dark" }
+const processColors = (
+  palette,
+  styles,
+  { usesMediaStrategy, darkSelector, lightId, darkId, variablePrefix = "" }
 ) => {
-  const extendsDefaultColors = !config.theme.colors;
-
-  const colors = flattenColorPalette(
-    extendsDefaultColors
-      ? config.theme.extend.colors || {}
-      : config.theme.colors
-  );
-
-  const usesMediaStrategy = Array.isArray(config.darkMode)
-    ? config.darkMode[0] !== "class"
-    : config.darkMode !== "class";
-  const DARK_SELECTOR =
-    !usesMediaStrategy &&
-    (Array.isArray(config.darkMode) ? config.darkMode[1] || ".dark" : ".dark");
-
-  const stylesToAdd = {
-    html: {},
-    ...(usesMediaStrategy
-      ? { "@media (prefers-color-scheme: dark)": { html: {} } }
-      : { [DARK_SELECTOR]: {} }),
-  };
+  const colors = flattenColorPalette(palette);
 
   Object.keys(colors).forEach((colorName) => {
     const match = colorName.match(
@@ -58,32 +39,71 @@ module.exports = (
         if (colors[modeAwareColorName]) {
           throw `withModeAwareColors plugin error: adding the '${modeAwareColorName}' mode-aware color would overwrite an existing color.`;
         } else {
-          const varName = `--color-${modeAwareColorName}`;
+          const varName = `--color-${
+            variablePrefix ? `${variablePrefix}-` : ""
+          }${modeAwareColorName}`;
           colors[modeAwareColorName] = `rgb(var(${varName}) / <alpha-value>)`;
 
           const lightStyle = Color(lightColor).rgb().array().join(" ");
           const darkStyle = Color(darkColor).rgb().array().join(" ");
 
-          stylesToAdd.html[varName] = lightStyle;
+          styles.html[varName] = lightStyle;
           if (usesMediaStrategy) {
-            stylesToAdd["@media (prefers-color-scheme: dark)"].html[varName] =
+            styles["@media (prefers-color-scheme: dark)"].html[varName] =
               darkStyle;
           } else {
-            stylesToAdd[DARK_SELECTOR][varName] = darkStyle;
+            styles[darkSelector][varName] = darkStyle;
           }
         }
       }
     }
   });
 
+  return { colors, styles };
+};
+
+module.exports = (
+  config,
+  { lightId, darkId } = { lightId: "light", darkId: "dark" }
+) => {
+  const usesMediaStrategy = Array.isArray(config.darkMode)
+    ? config.darkMode[0] !== "class"
+    : config.darkMode !== "class";
+  const darkSelector =
+    !usesMediaStrategy &&
+    (Array.isArray(config.darkMode) ? config.darkMode[1] || ".dark" : ".dark");
+
+  const styles = {
+    html: {},
+    ...(usesMediaStrategy
+      ? { "@media (prefers-color-scheme: dark)": { html: {} } }
+      : { [darkSelector]: {} }),
+  };
+
+  const extendsDefaultColors = !config.theme.colors;
+
+  const colors = extendsDefaultColors
+    ? config.theme.extend.colors || {}
+    : config.theme.colors;
+
+  const processed = processColors(colors, styles, {
+    usesMediaStrategy,
+    darkSelector,
+    lightId,
+    darkId,
+  });
+
   return {
     ...config,
     theme: extendsDefaultColors
-      ? { ...config.theme, extend: { ...(config.theme.extend || {}), colors } }
-      : { ...(config.theme || []), colors },
+      ? {
+          ...config.theme,
+          extend: { ...(config.theme.extend || {}), colors: processed.colors },
+        }
+      : { ...(config.theme || []), colors: processed.colors },
     plugins: [
       ...(config.plugins || []),
-      plugin(({ addBase }) => addBase(stylesToAdd)),
+      plugin(({ addBase }) => addBase(styles)),
     ],
   };
 };
