@@ -19,6 +19,8 @@ const processColors = (
   styles,
   { usesMediaStrategy, darkSelector, lightId, darkId, variablePrefix = "" }
 ) => {
+  if (!palette) return { colors: {}, styles };
+
   const colors = flattenColorPalette(palette);
 
   Object.keys(colors).forEach((colorName) => {
@@ -80,27 +82,28 @@ module.exports = (
       : { [darkSelector]: {} }),
   };
 
-  const extendsDefaultColors = !config.theme.colors;
+  if (config.theme?.colors) {
+    const { colors } = processColors(config.theme?.colors, styles, {
+      usesMediaStrategy,
+      darkSelector,
+      lightId,
+      darkId,
+    });
+    config.theme.colors = colors;
+  }
 
-  const colors = extendsDefaultColors
-    ? config.theme.extend.colors || {}
-    : config.theme.colors;
-
-  const processed = processColors(colors, styles, {
-    usesMediaStrategy,
-    darkSelector,
-    lightId,
-    darkId,
-  });
+  if (config.theme?.extend?.colors) {
+    const { colors } = processColors(config.theme.extend.colors, styles, {
+      usesMediaStrategy,
+      darkSelector,
+      lightId,
+      darkId,
+    });
+    config.theme.extend.colors = colors;
+  }
 
   return {
     ...config,
-    theme: extendsDefaultColors
-      ? {
-          ...config.theme,
-          extend: { ...(config.theme.extend || {}), colors: processed.colors },
-        }
-      : { ...(config.theme || []), colors: processed.colors },
     plugins: [
       ...(config.plugins || []),
       plugin(({ addBase }) => addBase(styles)),
