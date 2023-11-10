@@ -44,6 +44,8 @@ Any pair of colors `X-light` and `X-dark` will yield a new color `X` that automa
 
 - Of course, you can still use `dark:`, `md:`, `hover:` and any other Tailwind modifiers.
 
+- You can also use the plugin with scoped tailwind color configuration such as `textColor`, `backgroundColor`, `borderColor` or `outlineColor`.
+
 ## Options
 
 If for some reason `-light` and `-dark` don't work for you, you can pass an options object as a second parameter and customize the suffixes. Just replace `"light"` and `"dark"` with any other string.
