@@ -48,7 +48,7 @@ Any pair of colors `X-light` and `X-dark` will yield a new color `X` that automa
 
 ## Options
 
-If for some reason `-light` and `-dark` don't work for you, you can pass an options object as a second parameter and customize the suffixes. Just replace `"light"` and `"dark"` with any other string.
+If for some reason `-light` and `-dark` are not right for your use case, you can pass an options object as a second parameter and customize the suffixes. Just replace `"light"` and `"dark"` with any other string.
 
 ```js
 module.exports = require("tailwind-mode-aware-colors")(config, {
