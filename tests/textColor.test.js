@@ -18,7 +18,7 @@ describe("textColor theme", () => {
       expect.objectContaining({
         theme: {
           textColor: {
-            a: "rgb(var(--color-text-a) / <alpha-value>)",
+            a: "rgba(var(--color-text-a))",
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
@@ -47,7 +47,7 @@ describe("textColor theme", () => {
           theme: {
             extend: {
               textColor: {
-                a: "rgb(var(--color-text-a) / <alpha-value>)",
+                a: "rgba(var(--color-text-a))",
                 "a-light": "#ffffff",
                 "a-dark": "#000000",
               },
@@ -94,7 +94,7 @@ describe("textColor theme", () => {
         expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
           `
           .text-a\\/50 {
-            color: rgb(var(--color-text-a) / 0.5)
+            color: rgba(var(--color-text-a), 0.5)
           }
           `.replace(/\n|\s|\t/g, "")
         );
@@ -105,12 +105,12 @@ describe("textColor theme", () => {
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `html {
-          --color-text-a: 255 255 255;
+          --color-text-a: 255, 255, 255;
         }`.replace(/\n|\s|\t/g, "")
         );
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `${expectedSelector} {
-          --color-text-a: 0 0 0;
+          --color-text-a: 0, 0, 0;
         }`.replace(/\n|\s|\t/g, "")
         );
       });

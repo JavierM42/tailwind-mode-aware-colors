@@ -46,6 +46,8 @@ Any pair of colors `X-light` and `X-dark` will yield a new color `X` that automa
 
 - You can also use the plugin with scoped tailwind color configuration such as `textColor`, `backgroundColor`, `borderColor` or `outlineColor`.
 
+- To hardcode opacity values in your tailwind config, you can use rgba `rgba(255, 255, 255, 0.2)` or hex `#ffffff33`
+
 ## Options
 
 If for some reason `-light` and `-dark` are not right for your use case, you can pass an options object as a second parameter and customize the suffixes. Just replace `"light"` and `"dark"` with any other string.

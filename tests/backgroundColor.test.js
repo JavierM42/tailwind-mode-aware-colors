@@ -18,7 +18,7 @@ describe("backgroundColor theme", () => {
       expect.objectContaining({
         theme: {
           backgroundColor: {
-            a: "rgb(var(--color-background-a) / <alpha-value>)",
+            a: "rgba(var(--color-background-a))",
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
@@ -47,7 +47,7 @@ describe("backgroundColor theme", () => {
           theme: {
             extend: {
               backgroundColor: {
-                a: "rgb(var(--color-background-a) / <alpha-value>)",
+                a: "rgba(var(--color-background-a))",
                 "a-light": "#ffffff",
                 "a-dark": "#000000",
               },
@@ -94,7 +94,7 @@ describe("backgroundColor theme", () => {
         expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
           `
           .bg-a\\/50 {
-            background-color: rgb(var(--color-background-a) / 0.5)
+            background-color: rgba(var(--color-background-a), 0.5)
           }
           `.replace(/\n|\s|\t/g, "")
         );
@@ -105,12 +105,12 @@ describe("backgroundColor theme", () => {
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `html {
-          --color-background-a: 255 255 255;
+          --color-background-a: 255, 255, 255;
         }`.replace(/\n|\s|\t/g, "")
         );
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `${expectedSelector} {
-          --color-background-a: 0 0 0;
+          --color-background-a: 0, 0, 0;
         }`.replace(/\n|\s|\t/g, "")
         );
       });

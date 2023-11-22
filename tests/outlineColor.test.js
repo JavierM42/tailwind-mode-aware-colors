@@ -18,7 +18,7 @@ describe("outlineColor theme", () => {
       expect.objectContaining({
         theme: {
           outlineColor: {
-            a: "rgb(var(--color-outline-a) / <alpha-value>)",
+            a: "rgba(var(--color-outline-a))",
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
@@ -47,7 +47,7 @@ describe("outlineColor theme", () => {
           theme: {
             extend: {
               outlineColor: {
-                a: "rgb(var(--color-outline-a) / <alpha-value>)",
+                a: "rgba(var(--color-outline-a))",
                 "a-light": "#ffffff",
                 "a-dark": "#000000",
               },
@@ -94,7 +94,7 @@ describe("outlineColor theme", () => {
         expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
           `
           .outline-a\\/50 {
-            outline-color: rgb(var(--color-outline-a) / 0.5)
+            outline-color: rgba(var(--color-outline-a), 0.5)
           }
           `.replace(/\n|\s|\t/g, "")
         );
@@ -105,12 +105,12 @@ describe("outlineColor theme", () => {
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `html {
-          --color-outline-a: 255 255 255;
+          --color-outline-a: 255, 255, 255;
         }`.replace(/\n|\s|\t/g, "")
         );
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `${expectedSelector} {
-          --color-outline-a: 0 0 0;
+          --color-outline-a: 0, 0, 0;
         }`.replace(/\n|\s|\t/g, "")
         );
       });

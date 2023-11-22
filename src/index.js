@@ -44,10 +44,10 @@ const processColors = (
           const varName = `--color-${
             variablePrefix ? `${variablePrefix}-` : ""
           }${modeAwareColorName}`;
-          colors[modeAwareColorName] = `rgb(var(${varName}) / <alpha-value>)`;
+          colors[modeAwareColorName] = `rgba(var(${varName}))`;
 
-          const lightStyle = Color(lightColor).rgb().array().join(" ");
-          const darkStyle = Color(darkColor).rgb().array().join(" ");
+          const lightStyle = Color(lightColor).rgb().array().join(", ");
+          const darkStyle = Color(darkColor).rgb().array().join(", ");
 
           styles.html[varName] = lightStyle;
           if (usesMediaStrategy) {

@@ -19,7 +19,7 @@ describe("With nested color syntax", () => {
       expect.objectContaining({
         theme: {
           colors: {
-            "a-b": "rgb(var(--color-a-b) / <alpha-value>)",
+            "a-b": "rgba(var(--color-a-b))",
             "a-b-light": "#ffffff",
             "a-b-dark": "#000000",
           },
@@ -52,7 +52,7 @@ describe("With -light- and -dark- segments in the middle", () => {
       expect.objectContaining({
         theme: {
           colors: {
-            "a-b-c": "rgb(var(--color-a-b-c) / <alpha-value>)",
+            "a-b-c": "rgba(var(--color-a-b-c))",
             "a-b-light-c": "#ffffff",
             "a-b-dark-c": "#000000",
           },
@@ -81,7 +81,7 @@ describe("With light- and dark- segments at the start", () => {
       expect.objectContaining({
         theme: {
           colors: {
-            a: "rgb(var(--color-a) / <alpha-value>)",
+            a: "rgba(var(--color-a))",
             "light-a": "#ffffff",
             "dark-a": "#000000",
           },
@@ -111,7 +111,7 @@ describe("With custom light and dark ids", () => {
       expect.objectContaining({
         theme: {
           colors: {
-            a: "rgb(var(--color-a) / <alpha-value>)",
+            a: "rgba(var(--color-a))",
             "a-claro": "#ffffff",
             "a-oscuro": "#000000",
           },
