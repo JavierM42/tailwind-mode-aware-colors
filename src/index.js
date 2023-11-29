@@ -41,20 +41,41 @@ const processColors = (
         if (colors[modeAwareColorName]) {
           throw `withModeAwareColors plugin error: adding the '${modeAwareColorName}' mode-aware color would overwrite an existing color.`;
         } else {
-          const varName = `--color-${
+          const colorName = `--color-${
             variablePrefix ? `${variablePrefix}-` : ""
           }${modeAwareColorName}`;
-          colors[modeAwareColorName] = `rgba(var(${varName}))`;
 
-          const lightStyle = Color(lightColor).rgb().array().join(", ");
-          const darkStyle = Color(darkColor).rgb().array().join(", ");
+          const opacityName = `--opacity-${
+            variablePrefix ? `${variablePrefix}-` : ""
+          }${modeAwareColorName}`;
 
-          styles.html[varName] = lightStyle;
+          colors[modeAwareColorName] = `rgb(var(${colorName}) / calc(var(${opacityName}, 1) * <alpha-value>))`;
+
+          const lightArray = Color(lightColor).rgb().array();
+          const lightColorStyle = lightArray.slice(0, 3).join(" ");
+          const lightOpacityStyle = lightArray.length > 3 ? `${lightArray[3] * 100}%` : undefined;
+          
+          const darkArray = Color(darkColor).rgb().array();
+          const darkColorStyle = darkArray.slice(0, 3).join(" ");
+          const darkOpacityStyle = darkArray.length > 3 ? `${darkArray[3] * 100}%` : undefined;
+
+          styles.html[colorName] = lightColorStyle;
+          if (lightOpacityStyle) {
+            styles.html[opacityName] = lightOpacityStyle;
+          }
+
           if (usesMediaStrategy) {
-            styles["@media (prefers-color-scheme: dark)"].html[varName] =
-              darkStyle;
+            styles["@media (prefers-color-scheme: dark)"].html[colorName] =
+              darkColorStyle;
+            if (darkOpacityStyle) {
+              styles["@media (prefers-color-scheme: dark)"].html[opacityName] =
+                darkOpacityStyle;
+            }
           } else {
-            styles[darkSelector][varName] = darkStyle;
+            styles[darkSelector][colorName] = darkColorStyle;
+            if (darkOpacityStyle) {
+              styles[darkSelector][opacityName] = darkOpacityStyle;
+            }
           }
         }
       }

@@ -18,7 +18,7 @@ describe("outlineColor theme", () => {
       expect.objectContaining({
         theme: {
           outlineColor: {
-            a: "rgba(var(--color-outline-a))",
+            a: "rgb(var(--color-outline-a) / calc(var(--opacity-outline-a, 1) * <alpha-value>))",
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
@@ -47,7 +47,7 @@ describe("outlineColor theme", () => {
           theme: {
             extend: {
               outlineColor: {
-                a: "rgba(var(--color-outline-a))",
+                a: "rgb(var(--color-outline-a) / calc(var(--opacity-outline-a, 1) * <alpha-value>))",
                 "a-light": "#ffffff",
                 "a-dark": "#000000",
               },
@@ -74,7 +74,7 @@ describe("outlineColor theme", () => {
           darkMode: darkModeConfig,
           content: [
             {
-              raw: "bg-a/50 text-a border-a outline-a/50 dark something custom-selector",
+              raw: "bg-a/50 text-a border-a outline-b/50 outline-a dark something custom-selector",
             },
           ],
           theme: {
@@ -82,6 +82,10 @@ describe("outlineColor theme", () => {
               a: {
                 light: "#ffffff",
                 dark: "#000000",
+              },
+              b: {
+                light: "rgba(255, 255, 255, 0.2)",
+                dark: "rgba(0, 0, 0, 0.2)",
               },
             },
           },
@@ -93,8 +97,11 @@ describe("outlineColor theme", () => {
 
         expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
           `
-          .outline-a\\/50 {
-            outline-color: rgba(var(--color-outline-a), 0.5)
+          .outline-a {
+            outline-color: rgb(var(--color-outline-a) / calc(var(--opacity-outline-a, 1) * 1))
+          }
+          .outline-b\\/50 {
+            outline-color: rgb(var(--color-outline-b) / calc(var(--opacity-outline-b, 1) * 0.5))
           }
           `.replace(/\n|\s|\t/g, "")
         );
@@ -105,12 +112,16 @@ describe("outlineColor theme", () => {
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `html {
-          --color-outline-a: 255, 255, 255;
+          --color-outline-a: 255 255 255;
+          --color-outline-b: 255 255 255;
+          --opacity-outline-b: 20%;
         }`.replace(/\n|\s|\t/g, "")
         );
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `${expectedSelector} {
-          --color-outline-a: 0, 0, 0;
+          --color-outline-a: 0 0 0;
+          --color-outline-b: 0 0 0;
+          --opacity-outline-b: 20%;
         }`.replace(/\n|\s|\t/g, "")
         );
       });

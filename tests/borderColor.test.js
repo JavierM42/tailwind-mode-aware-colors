@@ -18,7 +18,7 @@ describe("borderColor theme", () => {
       expect.objectContaining({
         theme: {
           borderColor: {
-            a: "rgba(var(--color-border-a))",
+            a: "rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * <alpha-value>))",
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
@@ -47,7 +47,7 @@ describe("borderColor theme", () => {
           theme: {
             extend: {
               borderColor: {
-                a: "rgba(var(--color-border-a))",
+                a: "rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * <alpha-value>))",
                 "a-light": "#ffffff",
                 "a-dark": "#000000",
               },
@@ -94,7 +94,7 @@ describe("borderColor theme", () => {
         expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
           `
           .border-a\\/50 {
-            border-color: rgba(var(--color-border-a), 0.5)
+            border-color: rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * 0.5))
           }
           `.replace(/\n|\s|\t/g, "")
         );
@@ -105,12 +105,12 @@ describe("borderColor theme", () => {
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `html {
-          --color-border-a: 255, 255, 255;
+          --color-border-a: 255 255 255;
         }`.replace(/\n|\s|\t/g, "")
         );
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `${expectedSelector} {
-          --color-border-a: 0, 0, 0;
+          --color-border-a: 0 0 0;
         }`.replace(/\n|\s|\t/g, "")
         );
       });

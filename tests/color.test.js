@@ -30,16 +30,16 @@ describe("color theme", () => {
       expect.objectContaining({
         theme: {
           colors: {
-            a: "rgba(var(--color-a))",
+            a: "rgb(var(--color-a) / calc(var(--opacity-a, 1) * <alpha-value>))",
             "a-light": "#ffffff",
             "a-dark": "#000000",
-            b: "rgba(var(--color-b))",
+            b: "rgb(var(--color-b) / calc(var(--opacity-b, 1) * <alpha-value>))",
             "b-light": "rgb(255, 255, 255)",
             "b-dark": "rgb(0, 0, 0)",
-            c: "rgba(var(--color-c))",
+            c: "rgb(var(--color-c) / calc(var(--opacity-c, 1) * <alpha-value>))",
             "c-light": "#ffffff33",
             "c-dark": "#00000033",
-            d: "rgba(var(--color-d))",
+            d: "rgb(var(--color-d) / calc(var(--opacity-d, 1) * <alpha-value>))",
             "d-light": "rgba(255, 255, 255, 0.2)",
             "d-dark": "rgba(0, 0, 0, 0.2)",
           },
@@ -80,16 +80,16 @@ describe("color theme", () => {
           theme: {
             extend: {
               colors: {
-                a: "rgba(var(--color-a))",
+                a: "rgb(var(--color-a) / calc(var(--opacity-a, 1) * <alpha-value>))",
                 "a-light": "#ffffff",
                 "a-dark": "#000000",
-                b: "rgba(var(--color-b))",
+                b: "rgb(var(--color-b) / calc(var(--opacity-b, 1) * <alpha-value>))",
                 "b-light": "rgb(255, 255, 255)",
                 "b-dark": "rgb(0, 0, 0)",
-                c: "rgba(var(--color-c))",
+                c: "rgb(var(--color-c) / calc(var(--opacity-c, 1) * <alpha-value>))",
                 "c-light": "#ffffff33",
                 "c-dark": "#00000033",
-                d: "rgba(var(--color-d))",
+                d: "rgb(var(--color-d) / calc(var(--opacity-d, 1) * <alpha-value>))",
                 "d-light": "rgba(255, 255, 255, 0.2)",
                 "d-dark": "rgba(0, 0, 0, 0.2)",
               },
@@ -148,28 +148,32 @@ describe("color theme", () => {
         expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
           `
             .bg-a {
-              background-color: rgba(var(--color-a))
+              --tw-bg-opacity: 1;
+              background-color: rgb(var(--color-a) / calc(var(--opacity-a, 1) * var(--tw-bg-opacity)))
             }
             .bg-b {
-              background-color: rgba(var(--color-b))
+              --tw-bg-opacity: 1;
+              background-color: rgb(var(--color-b) / calc(var(--opacity-b, 1) * var(--tw-bg-opacity)))
             }
             .bg-c {
-              background-color: rgba(var(--color-c))
+              --tw-bg-opacity: 1;
+              background-color: rgb(var(--color-c) / calc(var(--opacity-c, 1) * var(--tw-bg-opacity)))
             }
             .bg-d {
-              background-color: rgba(var(--color-d))
+              --tw-bg-opacity: 1;
+              background-color: rgb(var(--color-d) / calc(var(--opacity-d, 1) * var(--tw-bg-opacity)))
             }
             .text-a\\/50 {
-              color: rgba(var(--color-a), 0.5)
+              color: rgb(var(--color-a) / calc(var(--opacity-a, 1) * 0.5))
             }
             .text-b\\/50 {
-              color: rgba(var(--color-b), 0.5)
+              color: rgb(var(--color-b) / calc(var(--opacity-b, 1) * 0.5))
             }
             .text-c\\/50 {
-              color: rgba(var(--color-c), 0.5)
+              color: rgb(var(--color-c) / calc(var(--opacity-c, 1) * 0.5))
             }
             .text-d\\/50 {
-              color: rgba(var(--color-d), 0.5)
+              color: rgb(var(--color-d) / calc(var(--opacity-d, 1) * 0.5))
             }
           `.replace(/\n|\s|\t/g, "")
         );
@@ -180,18 +184,22 @@ describe("color theme", () => {
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `html {
-          --color-a: 255, 255, 255;
-          --color-b: 255, 255, 255;
-          --color-c: 255, 255, 255, 0.2;
-          --color-d: 255, 255, 255, 0.2;
+          --color-a: 255 255 255;
+          --color-b: 255 255 255;
+          --color-c: 255 255 255;
+          --opacity-c: 20%;
+          --color-d: 255 255 255;
+          --opacity-d: 20%;
         }`.replace(/\n|\s|\t/g, "")
         );
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `${expectedSelector} {
-          --color-a: 0, 0, 0;
-          --color-b: 0, 0, 0;
-          --color-c: 0, 0, 0, 0.2;
-          --color-d: 0, 0, 0, 0.2;
+          --color-a: 0 0 0;
+          --color-b: 0 0 0;
+          --color-c: 0 0 0;
+          --opacity-c: 20%;
+          --color-d: 0 0 0;
+          --opacity-d: 20%;
         }`.replace(/\n|\s|\t/g, "")
         );
       });

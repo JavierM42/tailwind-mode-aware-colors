@@ -36,22 +36,22 @@ describe("Complex test", () => {
       expect.objectContaining({
         theme: {
           colors: {
-            a: "rgba(var(--color-a))",
+            a: "rgb(var(--color-a) / calc(var(--opacity-a, 1) * <alpha-value>))",
             "a-light": "#fcfcfc",
             "a-dark": "#030303",
           },
           borderColor: {
-            a: "rgba(var(--color-border-a))",
+            a: "rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * <alpha-value>))",
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
           textColor: {
-            a: "rgba(var(--color-text-a))",
+            a: "rgb(var(--color-text-a) / calc(var(--opacity-text-a, 1) * <alpha-value>))",
             "a-light": "#fefefe",
             "a-dark": "#010101",
           },
           backgroundColor: {
-            a: "rgba(var(--color-background-a))",
+            a: "rgb(var(--color-background-a) / calc(var(--opacity-background-a, 1) * <alpha-value>))",
             "a-light": "#fdfdfd",
             "a-dark": "#020202",
           },
@@ -114,16 +114,18 @@ describe("Complex test", () => {
         expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
           `
       .border-a {
-        border-color: rgba(var(--color-border-a))
+        --tw-border-opacity: 1;
+        border-color: rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * var(--tw-border-opacity)))
       }
       .bg-a {
-        background-color: rgba(var(--color-background-a))
+        --tw-bg-opacity: 1;
+        background-color: rgb(var(--color-background-a) / calc(var(--opacity-background-a, 1) * var(--tw-bg-opacity)))
       }
       .text-a\\/50 {
-        color: rgba(var(--color-text-a), 0.5)
+        color: rgb(var(--color-text-a) / calc(var(--opacity-text-a, 1) * 0.5))
       }
       .outline-a\\/20 {
-        outline-color: rgba(var(--color-a), 0.2)
+        outline-color: rgb(var(--color-a) / calc(var(--opacity-a, 1) * 0.2))
       }
       `.replace(/\n|\s|\t/g, "")
         );
@@ -134,18 +136,18 @@ describe("Complex test", () => {
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `html {
-          --color-a: 252, 252, 252;
-          --color-text-a: 254, 254, 254;
-          --color-background-a: 253, 253, 253;
-          --color-border-a: 255, 255, 255;
+          --color-a: 252 252 252;
+          --color-text-a: 254 254 254;
+          --color-background-a: 253 253 253;
+          --color-border-a: 255 255 255;
         }`.replace(/\n|\s|\t/g, "")
         );
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
           `${expectedSelector} {
-          --color-a: 3, 3, 3;
-          --color-text-a: 1, 1, 1;
-          --color-background-a: 2, 2, 2;
-          --color-border-a: 0, 0, 0;
+          --color-a: 3 3 3;
+          --color-text-a: 1 1 1;
+          --color-background-a: 2 2 2;
+          --color-border-a: 0 0 0;
         }`.replace(/\n|\s|\t/g, "")
         );
       });
