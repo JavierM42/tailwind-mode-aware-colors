@@ -36,22 +36,22 @@ describe("Complex test", () => {
       expect.objectContaining({
         theme: {
           colors: {
-            a: "rgb(var(--color-a) / calc(var(--opacity-a, 1) * <alpha-value>))",
+            a: expect.any(Function),
             "a-light": "#fcfcfc",
             "a-dark": "#030303",
           },
           borderColor: {
-            a: "rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * <alpha-value>))",
+            a: expect.any(Function),
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
           textColor: {
-            a: "rgb(var(--color-text-a) / calc(var(--opacity-text-a, 1) * <alpha-value>))",
+            a: expect.any(Function),
             "a-light": "#fefefe",
             "a-dark": "#010101",
           },
           backgroundColor: {
-            a: "rgb(var(--color-background-a) / calc(var(--opacity-background-a, 1) * <alpha-value>))",
+            a: expect.any(Function),
             "a-light": "#fdfdfd",
             "a-dark": "#020202",
           },
@@ -115,17 +115,17 @@ describe("Complex test", () => {
           `
       .border-a {
         --tw-border-opacity: 1;
-        border-color: rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * var(--tw-border-opacity)))
+        border-color: rgb(var(--color-border-a) / var(--opacity-border-a, var(--tw-border-opacity)))
       }
       .bg-a {
         --tw-bg-opacity: 1;
-        background-color: rgb(var(--color-background-a) / calc(var(--opacity-background-a, 1) * var(--tw-bg-opacity)))
+        background-color: rgb(var(--color-background-a) / var(--opacity-background-a, var(--tw-bg-opacity)))
       }
       .text-a\\/50 {
-        color: rgb(var(--color-text-a) / calc(var(--opacity-text-a, 1) * 0.5))
+        color: rgb(var(--color-text-a) / 0.5)
       }
       .outline-a\\/20 {
-        outline-color: rgb(var(--color-a) / calc(var(--opacity-a, 1) * 0.2))
+        outline-color: rgb(var(--color-a) / 0.2)
       }
       `.replace(/\n|\s|\t/g, "")
         );

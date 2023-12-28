@@ -41,40 +41,51 @@ const processColors = (
         if (colors[modeAwareColorName]) {
           throw `withModeAwareColors plugin error: adding the '${modeAwareColorName}' mode-aware color would overwrite an existing color.`;
         } else {
-          const colorName = `--color-${
-            variablePrefix ? `${variablePrefix}-` : ""
-          }${modeAwareColorName}`;
-
-          const opacityName = `--opacity-${
-            variablePrefix ? `${variablePrefix}-` : ""
-          }${modeAwareColorName}`;
-
-          colors[modeAwareColorName] = `rgb(var(${colorName}) / calc(var(${opacityName}, 1) * <alpha-value>))`;
-
           const lightArray = Color(lightColor).rgb().array();
           const lightColorStyle = lightArray.slice(0, 3).join(" ");
-          const lightOpacityStyle = lightArray.length > 3 ? `${lightArray[3] * 100}%` : undefined;
-          
+          const lightOpacityStyle =
+            lightArray.length > 3 ? `${lightArray[3] * 100}%` : undefined;
+
           const darkArray = Color(darkColor).rgb().array();
           const darkColorStyle = darkArray.slice(0, 3).join(" ");
-          const darkOpacityStyle = darkArray.length > 3 ? `${darkArray[3] * 100}%` : undefined;
+          const darkOpacityStyle =
+            darkArray.length > 3 ? `${darkArray[3] * 100}%` : undefined;
 
-          styles.html[colorName] = lightColorStyle;
+          const colorVariable = `--color-${
+            variablePrefix ? `${variablePrefix}-` : ""
+          }${modeAwareColorName}`;
+
+          const opacityVariable = `--opacity-${
+            variablePrefix ? `${variablePrefix}-` : ""
+          }${modeAwareColorName}`;
+
+          colors[modeAwareColorName] = ({ opacityValue }) =>
+            `rgb(var(${colorVariable}) / ${
+              opacityValue
+                ? typeof opacityValue === "string" &&
+                  opacityValue.startsWith("var(")
+                  ? `var(${opacityVariable}, ${opacityValue})`
+                  : opacityValue
+                : `var(${opacityVariable}, 1)`
+            })`;
+
+          styles.html[colorVariable] = lightColorStyle;
           if (lightOpacityStyle) {
-            styles.html[opacityName] = lightOpacityStyle;
+            styles.html[opacityVariable] = lightOpacityStyle;
           }
 
           if (usesMediaStrategy) {
-            styles["@media (prefers-color-scheme: dark)"].html[colorName] =
+            styles["@media (prefers-color-scheme: dark)"].html[colorVariable] =
               darkColorStyle;
             if (darkOpacityStyle) {
-              styles["@media (prefers-color-scheme: dark)"].html[opacityName] =
-                darkOpacityStyle;
+              styles["@media (prefers-color-scheme: dark)"].html[
+                opacityVariable
+              ] = darkOpacityStyle;
             }
           } else {
-            styles[darkSelector][colorName] = darkColorStyle;
+            styles[darkSelector][colorVariable] = darkColorStyle;
             if (darkOpacityStyle) {
-              styles[darkSelector][opacityName] = darkOpacityStyle;
+              styles[darkSelector][opacityVariable] = darkOpacityStyle;
             }
           }
         }

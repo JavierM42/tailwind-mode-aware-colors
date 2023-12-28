@@ -2,44 +2,44 @@ const withModeAwareColors = require("../src/index");
 const postcss = require("postcss", { async: true });
 
 describe("color theme", () => {
-  it("Flattens color map and adds mode aware color", () => {
-    expect(
-      withModeAwareColors({
-        theme: {
-          colors: {
-            a: {
-              light: "#ffffff",
-              dark: "#000000",
-            },
-            b: {
-              light: 'rgb(255, 255, 255)',
-              dark: 'rgb(0, 0, 0)',
-            },
-            c: {
-              light: '#ffffff33',
-              dark: '#00000033',
-            },
-            d: {
-              light: 'rgba(255, 255, 255, 0.2)',
-              dark: 'rgba(0, 0, 0, 0.2)',
-            },
-          },
+  const config = withModeAwareColors({
+    theme: {
+      colors: {
+        a: {
+          light: "#ffffff",
+          dark: "#000000",
         },
-      })
-    ).toEqual(
+        b: {
+          light: "rgb(255, 255, 255)",
+          dark: "rgb(0, 0, 0)",
+        },
+        c: {
+          light: "#ffffff33",
+          dark: "#00000033",
+        },
+        d: {
+          light: "rgba(255, 255, 255, 0.2)",
+          dark: "rgba(0, 0, 0, 0.2)",
+        },
+      },
+    },
+  });
+
+  it("Flattens color map and adds mode aware colors", () => {
+    expect(config).toEqual(
       expect.objectContaining({
         theme: {
           colors: {
-            a: "rgb(var(--color-a) / calc(var(--opacity-a, 1) * <alpha-value>))",
+            a: expect.any(Function),
             "a-light": "#ffffff",
             "a-dark": "#000000",
-            b: "rgb(var(--color-b) / calc(var(--opacity-b, 1) * <alpha-value>))",
+            b: expect.any(Function),
             "b-light": "rgb(255, 255, 255)",
             "b-dark": "rgb(0, 0, 0)",
-            c: "rgb(var(--color-c) / calc(var(--opacity-c, 1) * <alpha-value>))",
+            c: expect.any(Function),
             "c-light": "#ffffff33",
             "c-dark": "#00000033",
-            d: "rgb(var(--color-d) / calc(var(--opacity-d, 1) * <alpha-value>))",
+            d: expect.any(Function),
             "d-light": "rgba(255, 255, 255, 0.2)",
             "d-dark": "rgba(0, 0, 0, 0.2)",
           },
@@ -48,54 +48,108 @@ describe("color theme", () => {
     );
   });
 
+  it("Defines mode aware colors as functions based on opacity", () => {
+    const a = config.theme.colors.a;
+    const b = config.theme.colors.b;
+    const c = config.theme.colors.c;
+    const d = config.theme.colors.d;
+    expect(a({})).toEqual("rgb(var(--color-a) / var(--opacity-a, 1))");
+    expect(a({ opacityValue: 0.4 })).toEqual("rgb(var(--color-a) / 0.4)");
+    expect(a({ opacityValue: "var(--something)" })).toEqual(
+      "rgb(var(--color-a) / var(--opacity-a, var(--something)))"
+    );
+    expect(b({})).toEqual("rgb(var(--color-b) / var(--opacity-b, 1))");
+    expect(b({ opacityValue: 0.4 })).toEqual("rgb(var(--color-b) / 0.4)");
+    expect(b({ opacityValue: "var(--something)" })).toEqual(
+      "rgb(var(--color-b) / var(--opacity-b, var(--something)))"
+    );
+    expect(c({})).toEqual("rgb(var(--color-c) / var(--opacity-c, 1))");
+    expect(c({ opacityValue: 0.4 })).toEqual("rgb(var(--color-c) / 0.4)");
+    expect(c({ opacityValue: "var(--something)" })).toEqual(
+      "rgb(var(--color-c) / var(--opacity-c, var(--something)))"
+    );
+    expect(d({})).toEqual("rgb(var(--color-d) / var(--opacity-d, 1))");
+    expect(d({ opacityValue: 0.4 })).toEqual("rgb(var(--color-d) / 0.4)");
+    expect(d({ opacityValue: "var(--something)" })).toEqual(
+      "rgb(var(--color-d) / var(--opacity-d, var(--something)))"
+    );
+  });
+
   describe("extend", () => {
-    it("Flattens extend color map and adds mode aware color", () => {
-      expect(
-        withModeAwareColors({
-          theme: {
-            extend: {
-              colors: {
-                a: {
-                  light: "#ffffff",
-                  dark: "#000000",
-                },
-                b: {
-                  light: 'rgb(255, 255, 255)',
-                  dark: 'rgb(0, 0, 0)',
-                },
-                c: {
-                  light: '#ffffff33',
-                  dark: '#00000033',
-                },
-                d: {
-                  light: 'rgba(255, 255, 255, 0.2)',
-                  dark: 'rgba(0, 0, 0, 0.2)',
-                },
-              },
+    const config = withModeAwareColors({
+      theme: {
+        extend: {
+          colors: {
+            a: {
+              light: "#ffffff",
+              dark: "#000000",
+            },
+            b: {
+              light: "rgb(255, 255, 255)",
+              dark: "rgb(0, 0, 0)",
+            },
+            c: {
+              light: "#ffffff33",
+              dark: "#00000033",
+            },
+            d: {
+              light: "rgba(255, 255, 255, 0.2)",
+              dark: "rgba(0, 0, 0, 0.2)",
             },
           },
-        })
-      ).toEqual(
+        },
+      },
+    });
+
+    it("Flattens extend color map and adds mode aware color", () => {
+      expect(config).toEqual(
         expect.objectContaining({
           theme: {
             extend: {
               colors: {
-                a: "rgb(var(--color-a) / calc(var(--opacity-a, 1) * <alpha-value>))",
+                a: expect.any(Function),
                 "a-light": "#ffffff",
                 "a-dark": "#000000",
-                b: "rgb(var(--color-b) / calc(var(--opacity-b, 1) * <alpha-value>))",
+                b: expect.any(Function),
                 "b-light": "rgb(255, 255, 255)",
                 "b-dark": "rgb(0, 0, 0)",
-                c: "rgb(var(--color-c) / calc(var(--opacity-c, 1) * <alpha-value>))",
+                c: expect.any(Function),
                 "c-light": "#ffffff33",
                 "c-dark": "#00000033",
-                d: "rgb(var(--color-d) / calc(var(--opacity-d, 1) * <alpha-value>))",
+                d: expect.any(Function),
                 "d-light": "rgba(255, 255, 255, 0.2)",
                 "d-dark": "rgba(0, 0, 0, 0.2)",
               },
             },
           },
         })
+      );
+    });
+
+    it("Defines mode aware colors as functions based on opacity", () => {
+      const a = config.theme.extend.colors.a;
+      const b = config.theme.extend.colors.b;
+      const c = config.theme.extend.colors.c;
+      const d = config.theme.extend.colors.d;
+      expect(a({})).toEqual("rgb(var(--color-a) / var(--opacity-a, 1))");
+      expect(a({ opacityValue: 0.4 })).toEqual("rgb(var(--color-a) / 0.4)");
+      expect(a({ opacityValue: "var(--something)" })).toEqual(
+        "rgb(var(--color-a) / var(--opacity-a, var(--something)))"
+      );
+      expect(b({})).toEqual("rgb(var(--color-b) / var(--opacity-b, 1))");
+      expect(b({ opacityValue: 0.4 })).toEqual("rgb(var(--color-b) / 0.4)");
+      expect(b({ opacityValue: "var(--something)" })).toEqual(
+        "rgb(var(--color-b) / var(--opacity-b, var(--something)))"
+      );
+      expect(c({})).toEqual("rgb(var(--color-c) / var(--opacity-c, 1))");
+      expect(c({ opacityValue: 0.4 })).toEqual("rgb(var(--color-c) / 0.4)");
+      expect(c({ opacityValue: "var(--something)" })).toEqual(
+        "rgb(var(--color-c) / var(--opacity-c, var(--something)))"
+      );
+      expect(d({})).toEqual("rgb(var(--color-d) / var(--opacity-d, 1))");
+      expect(d({ opacityValue: 0.4 })).toEqual("rgb(var(--color-d) / 0.4)");
+      expect(d({ opacityValue: "var(--something)" })).toEqual(
+        "rgb(var(--color-d) / var(--opacity-d, var(--something)))"
       );
     });
   });
@@ -126,16 +180,16 @@ describe("color theme", () => {
                 dark: "#000000",
               },
               b: {
-                light: 'rgb(255, 255, 255)',
-                dark: 'rgb(0, 0, 0)',
+                light: "rgb(255, 255, 255)",
+                dark: "rgb(0, 0, 0)",
               },
               c: {
-                light: '#ffffff33',
-                dark: '#00000033',
+                light: "#ffffff33",
+                dark: "#00000033",
               },
               d: {
-                light: 'rgba(255, 255, 255, 0.2)',
-                dark: 'rgba(0, 0, 0, 0.2)',
+                light: "rgba(255, 255, 255, 0.2)",
+                dark: "rgba(0, 0, 0, 0.2)",
               },
             },
           },
@@ -149,31 +203,31 @@ describe("color theme", () => {
           `
             .bg-a {
               --tw-bg-opacity: 1;
-              background-color: rgb(var(--color-a) / calc(var(--opacity-a, 1) * var(--tw-bg-opacity)))
+              background-color: rgb(var(--color-a) / var(--opacity-a, var(--tw-bg-opacity)))
             }
             .bg-b {
               --tw-bg-opacity: 1;
-              background-color: rgb(var(--color-b) / calc(var(--opacity-b, 1) * var(--tw-bg-opacity)))
+              background-color: rgb(var(--color-b) / var(--opacity-b, var(--tw-bg-opacity)))
             }
             .bg-c {
               --tw-bg-opacity: 1;
-              background-color: rgb(var(--color-c) / calc(var(--opacity-c, 1) * var(--tw-bg-opacity)))
+              background-color: rgb(var(--color-c) / var(--opacity-c, var(--tw-bg-opacity)))
             }
             .bg-d {
               --tw-bg-opacity: 1;
-              background-color: rgb(var(--color-d) / calc(var(--opacity-d, 1) * var(--tw-bg-opacity)))
+              background-color: rgb(var(--color-d) / var(--opacity-d, var(--tw-bg-opacity)))
             }
             .text-a\\/50 {
-              color: rgb(var(--color-a) / calc(var(--opacity-a, 1) * 0.5))
+              color: rgb(var(--color-a) / 0.5)
             }
             .text-b\\/50 {
-              color: rgb(var(--color-b) / calc(var(--opacity-b, 1) * 0.5))
+              color: rgb(var(--color-b) / 0.5)
             }
             .text-c\\/50 {
-              color: rgb(var(--color-c) / calc(var(--opacity-c, 1) * 0.5))
+              color: rgb(var(--color-c) / 0.5)
             }
             .text-d\\/50 {
-              color: rgb(var(--color-d) / calc(var(--opacity-d, 1) * 0.5))
+              color: rgb(var(--color-d) / 0.5)
             }
           `.replace(/\n|\s|\t/g, "")
         );

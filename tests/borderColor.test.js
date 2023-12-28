@@ -2,23 +2,23 @@ const withModeAwareColors = require("../src/index");
 const postcss = require("postcss");
 
 describe("borderColor theme", () => {
-  it("Flattens color map and adds mode aware color", () => {
-    expect(
-      withModeAwareColors({
-        theme: {
-          borderColor: {
-            a: {
-              light: "#ffffff",
-              dark: "#000000",
-            },
-          },
+  const config = withModeAwareColors({
+    theme: {
+      borderColor: {
+        a: {
+          light: "#ffffff",
+          dark: "#000000",
         },
-      })
-    ).toEqual(
+      },
+    },
+  });
+
+  it("Flattens color map and adds mode aware color", () => {
+    expect(config).toEqual(
       expect.objectContaining({
         theme: {
           borderColor: {
-            a: "rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * <alpha-value>))",
+            a: expect.any(Function),
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
@@ -27,33 +27,59 @@ describe("borderColor theme", () => {
     );
   });
 
+  it("Defines mode aware color as a function based on opacity", () => {
+    const a = config.theme.borderColor.a;
+    expect(a({})).toEqual(
+      "rgb(var(--color-border-a) / var(--opacity-border-a, 1))"
+    );
+    expect(a({ opacityValue: 0.4 })).toEqual(
+      "rgb(var(--color-border-a) / 0.4)"
+    );
+    expect(a({ opacityValue: "var(--tw-border-opacity)" })).toEqual(
+      "rgb(var(--color-border-a) / var(--opacity-border-a, var(--tw-border-opacity)))"
+    );
+  });
+
   describe("extend", () => {
-    it("Flattens extend color map and adds mode aware color", () => {
-      expect(
-        withModeAwareColors({
-          theme: {
-            extend: {
-              borderColor: {
-                a: {
-                  light: "#ffffff",
-                  dark: "#000000",
-                },
-              },
+    const config = withModeAwareColors({
+      theme: {
+        extend: {
+          borderColor: {
+            a: {
+              light: "#ffffff",
+              dark: "#000000",
             },
           },
-        })
-      ).toEqual(
+        },
+      },
+    });
+
+    it("Flattens extend color map and adds mode aware color", () => {
+      expect(config).toEqual(
         expect.objectContaining({
           theme: {
             extend: {
               borderColor: {
-                a: "rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * <alpha-value>))",
+                a: expect.any(Function),
                 "a-light": "#ffffff",
                 "a-dark": "#000000",
               },
             },
           },
         })
+      );
+    });
+
+    it("Defines mode aware color as a function based on opacity", () => {
+      const a = config.theme.extend.borderColor.a;
+      expect(a({})).toEqual(
+        "rgb(var(--color-border-a) / var(--opacity-border-a, 1))"
+      );
+      expect(a({ opacityValue: 0.4 })).toEqual(
+        "rgb(var(--color-border-a) / 0.4)"
+      );
+      expect(a({ opacityValue: "var(--tw-border-opacity)" })).toEqual(
+        "rgb(var(--color-border-a) / var(--opacity-border-a, var(--tw-border-opacity)))"
       );
     });
   });
@@ -94,7 +120,7 @@ describe("borderColor theme", () => {
         expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
           `
           .border-a\\/50 {
-            border-color: rgb(var(--color-border-a) / calc(var(--opacity-border-a, 1) * 0.5))
+            border-color: rgb(var(--color-border-a) / 0.5)
           }
           `.replace(/\n|\s|\t/g, "")
         );
