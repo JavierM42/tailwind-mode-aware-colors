@@ -63,7 +63,7 @@ describe("With -light- and -dark- segments in the middle", () => {
 });
 
 describe("With light- and dark- segments at the start", () => {
-  it.skip("Flattens color map and adds mode aware color", () => {
+  it("Flattens color map and adds mode aware color", () => {
     expect(
       withModeAwareColors({
         theme: {
@@ -92,7 +92,7 @@ describe("With light- and dark- segments at the start", () => {
 });
 
 describe("With custom light and dark ids", () => {
-  it.skip("Flattens color map and adds mode aware color", () => {
+  it("Flattens color map and adds mode aware color", () => {
     expect(
       withModeAwareColors(
         {
