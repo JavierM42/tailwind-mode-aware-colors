@@ -62,9 +62,9 @@ describe("Complex test", () => {
 
   describe.each`
     darkModeConfig                   | expectedSelector
-    ${undefined}                     | ${"@media (prefers-color-scheme: dark) { html"}
-    ${"media"}                       | ${"@media (prefers-color-scheme: dark) { html"}
-    ${["media", ".something"]}       | ${"@media (prefers-color-scheme: dark) { html"}
+    ${undefined}                     | ${"@media (prefers-color-scheme: dark) { :root"}
+    ${"media"}                       | ${"@media (prefers-color-scheme: dark) { :root"}
+    ${["media", ".something"]}       | ${"@media (prefers-color-scheme: dark) { :root"}
     ${"class"}                       | ${".dark"}
     ${["class"]}                     | ${".dark"}
     ${["class", ".custom-selector"]} | ${".custom-selector"}
@@ -135,7 +135,7 @@ describe("Complex test", () => {
         ).css;
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
-          `html {
+          `:root {
           --color-a: 252 252 252;
           --color-text-a: 254 254 254;
           --color-background-a: 253 253 253;

@@ -69,16 +69,17 @@ const processColors = (
                 : `var(${opacityVariable}, 1)`
             })`;
 
-          styles.html[colorVariable] = lightColorStyle;
+          styles[":root"][colorVariable] = lightColorStyle;
           if (lightOpacityStyle) {
-            styles.html[opacityVariable] = lightOpacityStyle;
+            styles[":root"][opacityVariable] = lightOpacityStyle;
           }
 
           if (usesMediaStrategy) {
-            styles["@media (prefers-color-scheme: dark)"].html[colorVariable] =
-              darkColorStyle;
+            styles["@media (prefers-color-scheme: dark)"][":root"][
+              colorVariable
+            ] = darkColorStyle;
             if (darkOpacityStyle) {
-              styles["@media (prefers-color-scheme: dark)"].html[
+              styles["@media (prefers-color-scheme: dark)"][":root"][
                 opacityVariable
               ] = darkOpacityStyle;
             }
@@ -108,9 +109,9 @@ module.exports = (
     (Array.isArray(config.darkMode) ? config.darkMode[1] || ".dark" : ".dark");
 
   const styles = {
-    html: {},
+    ":root": {},
     ...(usesMediaStrategy
-      ? { "@media (prefers-color-scheme: dark)": { html: {} } }
+      ? { "@media (prefers-color-scheme: dark)": { ":root": {} } }
       : { [darkSelector]: {} }),
   };
 
