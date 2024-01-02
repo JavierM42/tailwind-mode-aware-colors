@@ -2,23 +2,23 @@ const withModeAwareColors = require("../src/index");
 const postcss = require("postcss");
 
 describe("backgroundColor theme", () => {
-  it("Flattens color map and adds mode aware color", () => {
-    expect(
-      withModeAwareColors({
-        theme: {
-          backgroundColor: {
-            a: {
-              light: "#ffffff",
-              dark: "#000000",
-            },
-          },
+  const config = withModeAwareColors({
+    theme: {
+      backgroundColor: {
+        a: {
+          light: "#ffffff",
+          dark: "#000000",
         },
-      })
-    ).toEqual(
+      },
+    },
+  });
+
+  it("Flattens color map and adds mode aware color", () => {
+    expect(config).toEqual(
       expect.objectContaining({
         theme: {
           backgroundColor: {
-            a: "rgb(var(--color-background-a) / <alpha-value>)",
+            a: expect.any(Function),
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
@@ -27,33 +27,59 @@ describe("backgroundColor theme", () => {
     );
   });
 
+  it("Defines mode aware color as a function based on opacity", () => {
+    const a = config.theme.backgroundColor.a;
+    expect(a({})).toEqual(
+      "rgb(var(--color-background-a) / var(--opacity-background-a, 1))"
+    );
+    expect(a({ opacityValue: 0.4 })).toEqual(
+      "rgb(var(--color-background-a) / 0.4)"
+    );
+    expect(a({ opacityValue: "var(--tw-bg-opacity)" })).toEqual(
+      "rgb(var(--color-background-a) / var(--opacity-background-a, var(--tw-bg-opacity)))"
+    );
+  });
+
   describe("extend", () => {
-    it("Flattens extend color map and adds mode aware color", () => {
-      expect(
-        withModeAwareColors({
-          theme: {
-            extend: {
-              backgroundColor: {
-                a: {
-                  light: "#ffffff",
-                  dark: "#000000",
-                },
-              },
+    const config = withModeAwareColors({
+      theme: {
+        extend: {
+          backgroundColor: {
+            a: {
+              light: "#ffffff",
+              dark: "#000000",
             },
           },
-        })
-      ).toEqual(
+        },
+      },
+    });
+
+    it("Flattens extend color map and adds mode aware color", () => {
+      expect(config).toEqual(
         expect.objectContaining({
           theme: {
             extend: {
               backgroundColor: {
-                a: "rgb(var(--color-background-a) / <alpha-value>)",
+                a: expect.any(Function),
                 "a-light": "#ffffff",
                 "a-dark": "#000000",
               },
             },
           },
         })
+      );
+    });
+
+    it("Defines mode aware color as a function based on opacity", () => {
+      const a = config.theme.extend.backgroundColor.a;
+      expect(a({})).toEqual(
+        "rgb(var(--color-background-a) / var(--opacity-background-a, 1))"
+      );
+      expect(a({ opacityValue: 0.4 })).toEqual(
+        "rgb(var(--color-background-a) / 0.4)"
+      );
+      expect(a({ opacityValue: "var(--tw-bg-opacity)" })).toEqual(
+        "rgb(var(--color-background-a) / var(--opacity-background-a, var(--tw-bg-opacity)))"
       );
     });
   });

@@ -36,22 +36,22 @@ describe("Complex test", () => {
       expect.objectContaining({
         theme: {
           colors: {
-            a: "rgb(var(--color-a) / <alpha-value>)",
+            a: expect.any(Function),
             "a-light": "#fcfcfc",
             "a-dark": "#030303",
           },
           borderColor: {
-            a: "rgb(var(--color-border-a) / <alpha-value>)",
+            a: expect.any(Function),
             "a-light": "#ffffff",
             "a-dark": "#000000",
           },
           textColor: {
-            a: "rgb(var(--color-text-a) / <alpha-value>)",
+            a: expect.any(Function),
             "a-light": "#fefefe",
             "a-dark": "#010101",
           },
           backgroundColor: {
-            a: "rgb(var(--color-background-a) / <alpha-value>)",
+            a: expect.any(Function),
             "a-light": "#fdfdfd",
             "a-dark": "#020202",
           },
@@ -115,11 +115,11 @@ describe("Complex test", () => {
           `
       .border-a {
         --tw-border-opacity: 1;
-        border-color: rgb(var(--color-border-a) / var(--tw-border-opacity))
+        border-color: rgb(var(--color-border-a) / var(--opacity-border-a, var(--tw-border-opacity)))
       }
       .bg-a {
         --tw-bg-opacity: 1;
-        background-color: rgb(var(--color-background-a) / var(--tw-bg-opacity))
+        background-color: rgb(var(--color-background-a) / var(--opacity-background-a, var(--tw-bg-opacity)))
       }
       .text-a\\/50 {
         color: rgb(var(--color-text-a) / 0.5)

@@ -41,20 +41,52 @@ const processColors = (
         if (colors[modeAwareColorName]) {
           throw `withModeAwareColors plugin error: adding the '${modeAwareColorName}' mode-aware color would overwrite an existing color.`;
         } else {
-          const varName = `--color-${
+          const lightArray = Color(lightColor).rgb().array();
+          const lightColorStyle = lightArray.slice(0, 3).join(" ");
+          const lightOpacityStyle =
+            lightArray.length > 3 ? `${lightArray[3] * 100}%` : undefined;
+
+          const darkArray = Color(darkColor).rgb().array();
+          const darkColorStyle = darkArray.slice(0, 3).join(" ");
+          const darkOpacityStyle =
+            darkArray.length > 3 ? `${darkArray[3] * 100}%` : undefined;
+
+          const colorVariable = `--color-${
             variablePrefix ? `${variablePrefix}-` : ""
           }${modeAwareColorName}`;
-          colors[modeAwareColorName] = `rgb(var(${varName}) / <alpha-value>)`;
 
-          const lightStyle = Color(lightColor).rgb().array().join(" ");
-          const darkStyle = Color(darkColor).rgb().array().join(" ");
+          const opacityVariable = `--opacity-${
+            variablePrefix ? `${variablePrefix}-` : ""
+          }${modeAwareColorName}`;
 
-          styles.html[varName] = lightStyle;
+          colors[modeAwareColorName] = ({ opacityValue }) =>
+            `rgb(var(${colorVariable}) / ${
+              opacityValue
+                ? typeof opacityValue === "string" &&
+                  opacityValue.startsWith("var(")
+                  ? `var(${opacityVariable}, ${opacityValue})`
+                  : opacityValue
+                : `var(${opacityVariable}, 1)`
+            })`;
+
+          styles.html[colorVariable] = lightColorStyle;
+          if (lightOpacityStyle) {
+            styles.html[opacityVariable] = lightOpacityStyle;
+          }
+
           if (usesMediaStrategy) {
-            styles["@media (prefers-color-scheme: dark)"].html[varName] =
-              darkStyle;
+            styles["@media (prefers-color-scheme: dark)"].html[colorVariable] =
+              darkColorStyle;
+            if (darkOpacityStyle) {
+              styles["@media (prefers-color-scheme: dark)"].html[
+                opacityVariable
+              ] = darkOpacityStyle;
+            }
           } else {
-            styles[darkSelector][varName] = darkStyle;
+            styles[darkSelector][colorVariable] = darkColorStyle;
+            if (darkOpacityStyle) {
+              styles[darkSelector][opacityVariable] = darkOpacityStyle;
+            }
           }
         }
       }
