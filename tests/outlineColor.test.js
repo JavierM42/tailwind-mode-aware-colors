@@ -86,9 +86,9 @@ describe("outlineColor theme", () => {
 
   describe.each`
     darkModeConfig                   | expectedSelector
-    ${undefined}                     | ${"@media (prefers-color-scheme: dark) { html"}
-    ${"media"}                       | ${"@media (prefers-color-scheme: dark) { html"}
-    ${["media", ".something"]}       | ${"@media (prefers-color-scheme: dark) { html"}
+    ${undefined}                     | ${"@media (prefers-color-scheme: dark) { :root"}
+    ${"media"}                       | ${"@media (prefers-color-scheme: dark) { :root"}
+    ${["media", ".something"]}       | ${"@media (prefers-color-scheme: dark) { :root"}
     ${"class"}                       | ${".dark"}
     ${["class"]}                     | ${".dark"}
     ${["class", ".custom-selector"]} | ${".custom-selector"}
@@ -140,7 +140,7 @@ describe("outlineColor theme", () => {
         ).css;
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
-          `html {
+          `:root {
           --color-outline-a: 255 255 255;
           --color-outline-b: 255 255 255;
           --opacity-outline-b: 20%;

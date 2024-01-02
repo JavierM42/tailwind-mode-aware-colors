@@ -86,9 +86,9 @@ describe("backgroundColor theme", () => {
 
   describe.each`
     darkModeConfig                   | expectedSelector
-    ${undefined}                     | ${"@media (prefers-color-scheme: dark) { html"}
-    ${"media"}                       | ${"@media (prefers-color-scheme: dark) { html"}
-    ${["media", ".something"]}       | ${"@media (prefers-color-scheme: dark) { html"}
+    ${undefined}                     | ${"@media (prefers-color-scheme: dark) { :root"}
+    ${"media"}                       | ${"@media (prefers-color-scheme: dark) { :root"}
+    ${["media", ".something"]}       | ${"@media (prefers-color-scheme: dark) { :root"}
     ${"class"}                       | ${".dark"}
     ${["class"]}                     | ${".dark"}
     ${["class", ".custom-selector"]} | ${".custom-selector"}
@@ -130,7 +130,7 @@ describe("backgroundColor theme", () => {
         ).css;
 
         expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
-          `html {
+          `:root {
           --color-background-a: 255 255 255;
         }`.replace(/\n|\s|\t/g, "")
         );
