@@ -30,4 +30,4 @@ type Options = {
  * });
  * ```
  */
-export default function (config: Config, options: Options): Config;
+export default function withModeAwareColors(config: Config, options: Options): Config;
