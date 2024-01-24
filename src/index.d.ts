@@ -1,10 +1,15 @@
 import type { Config } from "tailwindcss";
+import type { RecursiveKeyValuePair } from "tailwindcss/types/config";
+
+interface ThemeConfig {
+  colors?: RecursiveKeyValuePair;
+}
 
 type Options = {
   /** @default "light" */
-  lightId: string;
+  lightId?: string;
   /** @default "dark" */
-  darkId: string;
+  darkId?: string;
 };
 
 /**
@@ -30,4 +35,4 @@ type Options = {
  * });
  * ```
  */
-export default function withModeAwareColors(config: Config, options: Options): Config;
+export default function withModeAwareColors(config: Config, options?: Options): Config;

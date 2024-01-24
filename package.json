@@ -28,7 +28,8 @@
   ],
   "devDependencies": {
     "jest": "^27.2.4",
-    "postcss": "^8.2.4"
+    "postcss": "^8.2.4",
+    "tsd": "^0.30.4"
   },
   "author": "Javier Morales"
 }
