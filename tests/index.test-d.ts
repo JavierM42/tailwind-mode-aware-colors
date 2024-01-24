@@ -48,15 +48,14 @@ withModeAwareColors({
   darkId: "oscuro",
 });
 
-expectError(() => {
-  withModeAwareColors({
-    content: ["./index.html"],
-    theme: {
-      colors: ({ colors }) => ({
-        a: colors.white,
-      }),
-    },
-  })
+// Invalid form: see discussion is #8
+withModeAwareColors({
+  content: ["./index.html"],
+  theme: {
+    colors: ({ colors }) => ({
+      a: colors.white,
+    }),
+  },
 });
 
 expectAssignable<Options>({

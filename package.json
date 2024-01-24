@@ -12,8 +12,7 @@
     "test": "jest && tsd -t './src/index.d.ts'"
   },
   "dependencies": {
-    "color": "^4.2.3",
-    "type-fest": "^4.10.1"
+    "color": "^4.2.3"
   },
   "peerDependencies": {
     "tailwindcss": "^3.1.0"
