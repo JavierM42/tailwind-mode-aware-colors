@@ -20,6 +20,8 @@ type Options = {
  *
  * With this plugin, `bg-primary` can be used instead of `bg-primary-light dark:bg-primary-dark`.
  *
+ * @warning Colors must be defined as an object (not a function) for the plugin to work.
+ *
  * @example
  * ```
  * module.exports = require('tailwind-mode-aware-colors')({
