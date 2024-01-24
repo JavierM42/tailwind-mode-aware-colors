@@ -9,10 +9,11 @@
   "license": "MIT",
   "repository": "https://github.com/JavierM42/tailwind-mode-aware-colors",
   "scripts": {
-    "test": "jest"
+    "test": "jest && tsd -t './src/index.d.ts'"
   },
   "dependencies": {
-    "color": "^4.2.3"
+    "color": "^4.2.3",
+    "type-fest": "^4.10.1"
   },
   "peerDependencies": {
     "tailwindcss": "^3.1.0"
@@ -31,5 +32,11 @@
     "postcss": "^8.2.4",
     "tsd": "^0.30.4"
   },
-  "author": "Javier Morales"
+  "author": "Javier Morales",
+  "tsd": {
+    "directory": "tests",
+    "compilerOptions": {
+      "noImplicitAny": false
+    }
+  }
 }

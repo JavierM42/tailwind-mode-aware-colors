@@ -7,6 +7,9 @@ type Options = NonNullable<Parameters<typeof withModeAwareColors>[1]>;
 withModeAwareColors({
   content: ["./index.html"],
   theme: {
+    container: {
+      center: true,
+    },
     colors: {
       a: colors.white,
       b: {
@@ -21,7 +24,13 @@ withModeAwareColors({
         },
       },
     },
+    extend: {
+      width: {
+        prose: "65ch",
+      },
+    },
   },
+  plugins: [],
 });
 
 withModeAwareColors({
@@ -39,7 +48,7 @@ withModeAwareColors({
   darkId: "oscuro",
 });
 
-expectError(
+expectError(() => {
   withModeAwareColors({
     content: ["./index.html"],
     theme: {
@@ -48,7 +57,7 @@ expectError(
       }),
     },
   })
-)
+});
 
 expectAssignable<Options>({
   lightId: "claro",

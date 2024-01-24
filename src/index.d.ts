@@ -1,9 +1,12 @@
-import type { Config } from "tailwindcss";
+import type { Config as TailwindConfig } from "tailwindcss";
 import type { RecursiveKeyValuePair } from "tailwindcss/types/config";
+import type { MergeDeep } from "type-fest";
 
-interface ThemeConfig {
-  colors?: RecursiveKeyValuePair;
-}
+type Config = MergeDeep<TailwindConfig, {
+  theme?: {
+    colors?: RecursiveKeyValuePair;
+  };
+}>;
 
 type Options = {
   /** @default "light" */
