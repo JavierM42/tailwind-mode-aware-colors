@@ -36,21 +36,23 @@ Any pair of colors `X-light` and `X-dark` will yield a new color `X` that automa
 
 - Works with both `media` and `class` [dark mode strategies](https://tailwindcss.com/docs/dark-mode#toggling-dark-mode-manually).
 
-- The original colors will still exist, so you can use the static shades as well as the new dynamic one.
+- Works with nested structures. For example, if you had `primary-surface-variant-light` and `primary-surface-variant-dark`, the plugin would generate `primary-surface-variant`.
 
-- Works with arbitrarily nested structures. For example, if you had `primary-surface-variant-light` and `primary-surface-variant-dark`, the plugin would generate `primary-surface-variant`.
+- Works with `theme.extend.colors`.
 
-- Works with `theme.extend.colors` too.
+- Works with `dark:`, `md:`, `hover:` and any other Tailwind variants.
 
-- Of course, you can still use `dark:`, `md:`, `hover:` and any other Tailwind modifiers.
+- Works with scoped color configurations such as `textColor`, `backgroundColor`, `borderColor` or `outlineColor`.
 
-- You can also use the plugin with scoped tailwind color configuration such as `textColor`, `backgroundColor`, `borderColor` or `outlineColor`.
+- Works with opacity. You can set default opacity to colors with `hex` or `rgba` syntax.
 
-- You can set default opacity to colors with hex or rgba syntax.
+- Works with `light-` and `dark-` prefixes instead of suffixes too.
+
+- You can still use the static shades.
 
 ## Options
 
-If for some reason `-light` and `-dark` are not right for your use case, you can pass an options object as a second parameter and customize the suffixes. Just replace `"light"` and `"dark"` with any other string.
+If for some reason `-light` and `-dark` are not right for your use case, you can pass an options object as a second parameter and customize those. Just replace `"light"` and `"dark"` with any other string.
 
 ```js
 module.exports = require("tailwind-mode-aware-colors")(config, {
@@ -58,6 +60,10 @@ module.exports = require("tailwind-mode-aware-colors")(config, {
   darkId: "dark",
 });
 ```
+
+## Limitations
+
+- Colors must be defined as an object (not a function) for the plugin to work.
 
 ## Why isn't the plugin called in the `plugins` array of `tailwind.config.js`?
 
