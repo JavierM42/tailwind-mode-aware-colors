@@ -34,7 +34,7 @@ module.exports = require('tailwind-mode-aware-colors')({
 
 Any pair of colors `X-light` and `X-dark` will yield a new color `X` that automatically adapts to the color scheme. You can also have `light-` and `dark-` as prefixes or even `-light-` and `-dark-` in the middle of it.
 
-- Works with both `media` and `class` [dark mode strategies](https://tailwindcss.com/docs/dark-mode#toggling-dark-mode-manually).
+- Works with both `media` and `selector` [dark mode strategies](https://tailwindcss.com/docs/dark-mode#toggling-dark-mode-manually).
 
 - Works with nested structures. For example, if you had `primary-surface-variant-light` and `primary-surface-variant-dark`, the plugin would generate `primary-surface-variant`.
 

@@ -61,13 +61,13 @@ describe("Complex test", () => {
   });
 
   describe.each`
-    darkModeConfig                   | expectedSelector
-    ${undefined}                     | ${"@media (prefers-color-scheme: dark) { :root"}
-    ${"media"}                       | ${"@media (prefers-color-scheme: dark) { :root"}
-    ${["media", ".something"]}       | ${"@media (prefers-color-scheme: dark) { :root"}
-    ${"class"}                       | ${".dark"}
-    ${["class"]}                     | ${".dark"}
-    ${["class", ".custom-selector"]} | ${".custom-selector"}
+    darkModeConfig                      | expectedSelector
+    ${undefined}                        | ${"@media (prefers-color-scheme: dark) { :root"}
+    ${"media"}                          | ${"@media (prefers-color-scheme: dark) { :root"}
+    ${["media", ".something"]}          | ${"@media (prefers-color-scheme: dark) { :root"}
+    ${"selector"}                       | ${".dark"}
+    ${["selector"]}                     | ${".dark"}
+    ${["selector", ".custom-selector"]} | ${".custom-selector"}
   `(
     "When darkMode config is $darkModeConfig",
     ({ darkModeConfig, expectedSelector }) => {

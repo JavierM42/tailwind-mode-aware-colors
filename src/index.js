@@ -102,8 +102,8 @@ module.exports = (
   { lightId, darkId } = { lightId: "light", darkId: "dark" }
 ) => {
   const usesMediaStrategy = Array.isArray(config.darkMode)
-    ? config.darkMode[0] !== "class"
-    : config.darkMode !== "class";
+    ? config.darkMode[0] !== "selector"
+    : config.darkMode !== "selector";
   const darkSelector =
     !usesMediaStrategy &&
     (Array.isArray(config.darkMode) ? config.darkMode[1] || ".dark" : ".dark");
