@@ -1,5 +1,5 @@
 const withModeAwareColors = require("../src/index");
-const postcss = require("postcss");
+const generateCss = require("./generateCss");
 
 describe("borderColor theme", () => {
   const config = withModeAwareColors({
@@ -95,7 +95,7 @@ describe("borderColor theme", () => {
   `(
     "When darkMode config is $darkModeConfig",
     ({ darkModeConfig, expectedSelector }) => {
-      it("Generates the correct CSS", () => {
+      it("Generates the correct CSS", async () => {
         const config = withModeAwareColors({
           darkMode: darkModeConfig,
           content: [
@@ -113,11 +113,9 @@ describe("borderColor theme", () => {
           },
         });
 
-        let utilitiesCSS = postcss([require("tailwindcss")(config)]).process(
-          "@tailwind utilities"
-        ).css;
+        let utilitiesCSS = await generateCss("@tailwind utilities", config);
 
-        expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
+        expect(utilitiesCSS).toBe(
           `
           .border-a\\/50 {
             border-color: rgb(var(--color-border-a) / 0.5)
@@ -125,16 +123,14 @@ describe("borderColor theme", () => {
           `.replace(/\n|\s|\t/g, "")
         );
 
-        let baseCSS = postcss([require("tailwindcss")(config)]).process(
-          "@tailwind base"
-        ).css;
+        let baseCSS = await generateCss("@tailwind base", config);
 
-        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+        expect(baseCSS).toContain(
           `:root {
           --color-border-a: 255 255 255;
         }`.replace(/\n|\s|\t/g, "")
         );
-        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+        expect(baseCSS).toContain(
           `${expectedSelector} {
           --color-border-a: 0 0 0;
         }`.replace(/\n|\s|\t/g, "")

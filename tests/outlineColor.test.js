@@ -1,5 +1,5 @@
 const withModeAwareColors = require("../src/index");
-const postcss = require("postcss");
+const generateCss = require("./generateCss");
 
 describe("outlineColor theme", () => {
   const config = withModeAwareColors({
@@ -95,7 +95,7 @@ describe("outlineColor theme", () => {
   `(
     "When darkMode config is $darkModeConfig",
     ({ darkModeConfig, expectedSelector }) => {
-      it("Generates the correct CSS", () => {
+      it("Generates the correct CSS", async () => {
         const config = withModeAwareColors({
           darkMode: darkModeConfig,
           content: [
@@ -117,11 +117,9 @@ describe("outlineColor theme", () => {
           },
         });
 
-        let utilitiesCSS = postcss([require("tailwindcss")(config)]).process(
-          "@tailwind utilities"
-        ).css;
+        let utilitiesCSS = await generateCss("@tailwind utilities", config);
 
-        expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
+        expect(utilitiesCSS).toBe(
           `
           .outline-a {
             outline-color: rgb(var(--color-outline-a) / var(--opacity-outline-a, 1))
@@ -135,18 +133,16 @@ describe("outlineColor theme", () => {
           `.replace(/\n|\s|\t/g, "")
         );
 
-        let baseCSS = postcss([require("tailwindcss")(config)]).process(
-          "@tailwind base"
-        ).css;
+        let baseCSS = await generateCss("@tailwind base", config);
 
-        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+        expect(baseCSS).toContain(
           `:root {
           --color-outline-a: 255 255 255;
           --color-outline-b: 255 255 255;
           --opacity-outline-b: 20%;
         }`.replace(/\n|\s|\t/g, "")
         );
-        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+        expect(baseCSS).toContain(
           `${expectedSelector} {
           --color-outline-a: 0 0 0;
           --color-outline-b: 0 0 0;

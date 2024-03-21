@@ -1,5 +1,5 @@
 const withModeAwareColors = require("../src/index");
-const postcss = require("postcss", { async: true });
+const generateCss = require("./generateCss");
 
 describe("color theme", () => {
   const config = withModeAwareColors({
@@ -165,7 +165,7 @@ describe("color theme", () => {
   `(
     "When darkMode config is $darkModeConfig",
     ({ darkModeConfig, expectedSelector }) => {
-      it("Generates the correct CSS", () => {
+      it("Generates the correct CSS", async () => {
         const config = withModeAwareColors({
           darkMode: darkModeConfig,
           content: [
@@ -195,11 +195,9 @@ describe("color theme", () => {
           },
         });
 
-        let utilitiesCSS = postcss([require("tailwindcss")(config)]).process(
-          "@tailwind utilities"
-        ).css;
+        let utilitiesCSS = await generateCss("@tailwind utilities", config);
 
-        expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
+        expect(utilitiesCSS).toBe(
           `
             .bg-a {
               --tw-bg-opacity: 1;
@@ -232,11 +230,9 @@ describe("color theme", () => {
           `.replace(/\n|\s|\t/g, "")
         );
 
-        let baseCSS = postcss([require("tailwindcss")(config)]).process(
-          "@tailwind base"
-        ).css;
+        let baseCSS = await generateCss("@tailwind base", config);
 
-        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+        expect(baseCSS).toContain(
           `:root {
           --color-a: 255 255 255;
           --color-b: 255 255 255;
@@ -246,7 +242,7 @@ describe("color theme", () => {
           --opacity-d: 20%;
         }`.replace(/\n|\s|\t/g, "")
         );
-        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+        expect(baseCSS).toContain(
           `${expectedSelector} {
           --color-a: 0 0 0;
           --color-b: 0 0 0;

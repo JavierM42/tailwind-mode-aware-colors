@@ -1,5 +1,5 @@
 const withModeAwareColors = require("../src/index");
-const postcss = require("postcss");
+const generateCss = require("./generateCss");
 
 describe("Complex test", () => {
   it("Flattens color map and adds mode aware colors", () => {
@@ -71,7 +71,7 @@ describe("Complex test", () => {
   `(
     "When darkMode config is $darkModeConfig",
     ({ darkModeConfig, expectedSelector }) => {
-      it("Generates the correct CSS", () => {
+      it("Generates the correct CSS", async () => {
         const config = withModeAwareColors({
           darkMode: darkModeConfig,
           content: [
@@ -107,11 +107,9 @@ describe("Complex test", () => {
           },
         });
 
-        let utilitiesCSS = postcss([require("tailwindcss")(config)]).process(
-          "@tailwind utilities"
-        ).css;
+        let utilitiesCSS = await generateCss("@tailwind utilities", config);
 
-        expect(utilitiesCSS.replace(/\n|\s|\t/g, "")).toBe(
+        expect(utilitiesCSS).toBe(
           `
       .border-a {
         --tw-border-opacity: 1;
@@ -130,11 +128,9 @@ describe("Complex test", () => {
       `.replace(/\n|\s|\t/g, "")
         );
 
-        let baseCSS = postcss([require("tailwindcss")(config)]).process(
-          "@tailwind base"
-        ).css;
+        let baseCSS = await generateCss("@tailwind base", config);
 
-        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+        expect(baseCSS).toContain(
           `:root {
           --color-a: 252 252 252;
           --color-text-a: 254 254 254;
@@ -142,7 +138,7 @@ describe("Complex test", () => {
           --color-border-a: 255 255 255;
         }`.replace(/\n|\s|\t/g, "")
         );
-        expect(baseCSS.replace(/\n|\s|\t/g, "")).toContain(
+        expect(baseCSS).toContain(
           `${expectedSelector} {
           --color-a: 3 3 3;
           --color-text-a: 1 1 1;
