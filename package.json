@@ -1,8 +1,9 @@
 {
   "name": "tailwind-mode-aware-colors",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "TailwindCSS Plugin to generate dynamic colors that will automatically switch between light and dark mode variants.",
   "exports": {
+    "import": "./src/index.js",
     "require": "./src/index.js",
     "types": "./src/index.d.ts"
   },
